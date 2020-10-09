@@ -11,5 +11,4 @@ Tumblr for music recs.
 <img src="https://drive.google.com/uc?export=view&id=1wkyrb6pe6oww60eYDM12UJGUglNRluUO" width=30%>
 
 ### Kyle Tran
-[![IMG-6450.jpg](https://i.postimg.cc/Ss7ddccd/IMG-6450.jpg)](https://postimg.cc/mzk72zX1)
-<img src="https://i.postimg.cc/Ss7ddccd/IMG-6450.jpg" width=30%>
+<img src="https://i.postimg.cc/G20gqcVL/IMG-6450.jpg" width=30%>
