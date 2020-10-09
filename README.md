@@ -12,4 +12,4 @@ Rebecca Xu
 <img src="https://drive.google.com/file/d/1wkyrb6pe6oww60eYDM12UJGUglNRluUO/view?usp=sharing" alt="alt text" width=30%> 
 
 Kyle Tran
-[![IMG-6450.jpg](https://i.postimg.cc/G20gqcVL/IMG-6450.jpg)](https://postimg.cc/WDn74PsC)
+[![IMG-6450.jpg](https://i.postimg.cc/Ss7ddccd/IMG-6450.jpg)](https://postimg.cc/mzk72zX1)
