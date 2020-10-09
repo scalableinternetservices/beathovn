@@ -12,3 +12,6 @@ Tumblr for music recs.
 
 ### Kyle Tran
 <img src="https://i.postimg.cc/G20gqcVL/IMG-6450.jpg" width=30%>
+
+### Sriram Balachandran
+<img src="pfp/sriram.jpg" alt="Sriram next to a dumpling" width=30%/>
