@@ -12,23 +12,19 @@ import { link } from './Link'
 import { getLoginPath, getPath, getSurveyPath, Route } from './route'
 
 const title = {
-  name: 'CS188',
+  name: 'Beathovn',
   path: getPath(Route.HOME),
   title: true,
 }
 
 const otherTabs = [
   {
-    name: 'lectures',
+    name: 'Sign In',
     path: getPath(Route.LECTURES),
   },
   {
-    name: 'projects',
+    name: 'Sign Up',
     path: getPath(Route.PROJECTS),
-  },
-  {
-    name: 'playground',
-    path: getPath(Route.PLAYGROUND),
   },
 ]
 
@@ -119,7 +115,7 @@ const Nav = style(
   'nav',
   'flex white items-center list pa2 ph4 ph5-ns ph7-l avenir f4',
   (p: { $isSubNav?: boolean }) => ({
-    background: `linear-gradient(90deg, ${'#005587'} 0%, ${'#2774AE'} 100%)`,
+    background: '#000000',
     opacity: '0.9',
     paddingTop: p.$isSubNav ? 0 : undefined,
     paddingBottom: p.$isSubNav ? 0 : undefined,
