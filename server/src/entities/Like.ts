@@ -6,6 +6,15 @@ export class Like extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  // Associate with a post
+  @CreateDateColumn()
+  timeCreated: Date
 
+  @OneToOne(() => Post)
+  @JoinColumn()
+  post: Post 
+
+  @OneToOne(() => User)
+  @JoinColumn()
+  user: User
+  // Associate with a post
 }
