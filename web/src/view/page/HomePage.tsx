@@ -1,21 +1,15 @@
 import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
-import { ColorName, Colors } from '../../../../common/src/colors'
-import { H1, H2, H3 } from '../../style/header'
-import { Spacer } from '../../style/spacer'
-import { style } from '../../style/styled'
-import { BodyText } from '../../style/text'
-import { Link } from '../nav/Link'
-import { AppRouteParams, getPath, Route } from '../nav/route'
+import { AppRouteParams } from '../nav/route'
 import { Page } from './Page'
 
-interface HomePageProps extends RouteComponentProps, AppRouteParams {}
+interface HomePageProps extends RouteComponentProps, AppRouteParams { }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function HomePage(props: HomePageProps) {
   return (
     <Page>
-      <Hero>
+      {/* <Hero>
         <H1>CS 188</H1>
         <H3>Scalable Internet Services</H3>
         <H3>UCLA, Fall 2020</H3>
@@ -152,29 +146,29 @@ export function HomePage(props: HomePageProps) {
             </BodyText>
           </Section>
         </RContent>
-      </Content>
+      </Content> */}
     </Page>
   )
 }
 
-const Hero = style('div', 'mb4 w-100 ba b--mid-gray br2 pa3 tc', {
-  borderLeftColor: Colors.lemon + '!important',
-  borderRightColor: Colors.lemon + '!important',
-  borderLeftWidth: '4px',
-  borderRightWidth: '4px',
-})
+// const Hero = style('div', 'mb4 w-100 ba b--mid-gray br2 pa3 tc', {
+//   borderLeftColor: Colors.purple + '!important',
+//   borderRightColor: Colors.purple + '!important',
+//   borderLeftWidth: '4px',
+//   borderRightWidth: '4px',
+// })
 
-const Content = style('div', 'flex-l')
+// const Content = style('div', 'flex-l')
 
-const LContent = style('div', 'flex-grow-0 w-70-l mr4-l')
+// const LContent = style('div', 'flex-grow-0 w-70-l mr4-l')
 
-const RContent = style('div', 'flex-grow-0  w-30-l')
+// const RContent = style('div', 'flex-grow-0  w-30-l')
 
-const Section = style('div', 'mb4 mid-gray ba b--mid-gray br2 pa3', (p: { $color?: ColorName }) => ({
-  borderLeftColor: Colors[p.$color || 'lemon'] + '!important',
-  borderLeftWidth: '3px',
-}))
+// const Section = style('div', 'mb4 mid-gray ba b--mid-gray br2 pa3', (p: { $color?: ColorName }) => ({
+//   borderLeftColor: Colors[p.$color || 'purple'] + '!important',
+//   borderLeftWidth: '3px',
+// }))
 
-const TD = style('td', 'pa1', p => ({
-  color: p.$theme.textColor(),
-}))
+// const TD = style('td', 'pa1', p => ({
+//   color: p.$theme.textColor(),
+// }))
