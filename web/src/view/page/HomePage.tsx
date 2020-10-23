@@ -9,7 +9,7 @@ import { Link } from '../nav/Link'
 import { AppRouteParams, getPath, Route } from '../nav/route'
 import { Page } from './Page'
 
-interface HomePageProps extends RouteComponentProps, AppRouteParams {}
+interface HomePageProps extends RouteComponentProps, AppRouteParams { }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function HomePage(props: HomePageProps) {
@@ -158,8 +158,8 @@ export function HomePage(props: HomePageProps) {
 }
 
 const Hero = style('div', 'mb4 w-100 ba b--mid-gray br2 pa3 tc', {
-  borderLeftColor: Colors.lemon + '!important',
-  borderRightColor: Colors.lemon + '!important',
+  borderLeftColor: Colors.purple + '!important',
+  borderRightColor: Colors.purple + '!important',
   borderLeftWidth: '4px',
   borderRightWidth: '4px',
 })
@@ -171,7 +171,7 @@ const LContent = style('div', 'flex-grow-0 w-70-l mr4-l')
 const RContent = style('div', 'flex-grow-0  w-30-l')
 
 const Section = style('div', 'mb4 mid-gray ba b--mid-gray br2 pa3', (p: { $color?: ColorName }) => ({
-  borderLeftColor: Colors[p.$color || 'lemon'] + '!important',
+  borderLeftColor: Colors[p.$color || 'purple'] + '!important',
   borderLeftWidth: '3px',
 }))
 

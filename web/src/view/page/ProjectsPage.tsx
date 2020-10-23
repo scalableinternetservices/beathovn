@@ -9,7 +9,7 @@ import { Link } from '../nav/Link'
 import { AppRouteParams, getPlaygroundPath } from '../nav/route'
 import { Page } from './Page'
 
-interface ProjectsPageProps extends RouteComponentProps, AppRouteParams {}
+interface ProjectsPageProps extends RouteComponentProps, AppRouteParams { }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function ProjectsPage(props: ProjectsPageProps) {
@@ -231,7 +231,7 @@ function Sprint(props: { day: string; title: string; checklist?: string[]; check
 const Table = style('table', 'w-100 ba b--black')
 
 const Section = style('div', 'mb4 mid-gray ba b--mid-gray br2 pa3', (p: { $color?: ColorName }) => ({
-  borderLeftColor: Colors[p.$color || 'lemon'] + '!important',
+  borderLeftColor: Colors[p.$color || 'purple'] + '!important',
   borderLeftWidth: '3px',
 }))
 
