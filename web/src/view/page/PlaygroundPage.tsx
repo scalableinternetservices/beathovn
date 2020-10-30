@@ -4,7 +4,7 @@ import { Login } from '../auth/Login'
 import { AppRouteParams, PlaygroundApp } from '../nav/route'
 import { Page } from './Page'
 
-interface PlaygroundPageProps extends RouteComponentProps, AppRouteParams { }
+interface PlaygroundPageProps extends RouteComponentProps, AppRouteParams {}
 
 export function PlaygroundPage(props: PlaygroundPageProps) {
   return <Page>{getPlaygroundApp(props.app)}</Page>
@@ -18,8 +18,8 @@ function getPlaygroundApp(app?: PlaygroundApp) {
     // case PlaygroundApp.SURVEYS:
     //   return <Surveys />
     case PlaygroundApp.LOGIN:
-      return <Login />
+      return <Login type="Up" />
     default:
-      return <Login />
+      return <Login type="Up" />
   }
 }

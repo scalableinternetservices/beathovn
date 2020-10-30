@@ -1,15 +1,12 @@
 import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
+import { Login } from '../auth/Login'
 import { AppRouteParams } from '../nav/route'
 import { Page } from './Page'
 
-interface ProjectsPageProps extends RouteComponentProps, AppRouteParams { }
+interface ProjectsPageProps extends RouteComponentProps, AppRouteParams {}
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function ProjectsPage(props: ProjectsPageProps) {
-  return (
-    <Page>
-      {/* <Section>
+/* <Section>
         <ProjectOverview />
         <Spacer $h5 />
         <ProjectRequirements />
@@ -17,7 +14,14 @@ export function ProjectsPage(props: ProjectsPageProps) {
         <ProjectIdeas />
         <Spacer $h5 />
         <SprintSchedule />
-      </Section> */}
+      </Section> */
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+/* This is the sign in page */
+export function ProjectsPage(props: ProjectsPageProps) {
+  return (
+    <Page>
+      <Login type="In" />
     </Page>
   )
 }

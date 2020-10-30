@@ -8,7 +8,11 @@ import { handleError } from '../toast/error'
 import { toastErr } from '../toast/toast'
 import { UserContext } from './user'
 
-export function Login() {
+type LoginProps = {
+  type: string
+}
+
+export function Login({ type }: LoginProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [err, setError] = useState({ email: false, password: false })
@@ -59,13 +63,13 @@ export function Login() {
         <Input $hasError={err.password} $onChange={setPassword} $onSubmit={login} name="password" type="password" />
       </div>
       <div className="mt3">
-        <Button onClick={login}>Sign Up</Button>
+        <Button onClick={login}>Sign {type}</Button>
       </div>
     </>
   )
 }
 
-function Logout() {
+export function Logout() {
   function logout() {
     return fetch('/auth/logout', {
       method: 'POST',
@@ -86,12 +90,12 @@ function Logout() {
   )
 }
 
-function validateEmail(email: string) {
+export function validateEmail(email: string) {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return re.test(String(email).toLowerCase())
 }
 
-function validate(
+export function validate(
   email: string,
   password: string,
   setError: React.Dispatch<React.SetStateAction<{ email: boolean; password: boolean }>>
