@@ -1,6 +1,6 @@
-import { BaseEntity, Entity, ManyToOne, PrimaryGeneratedColumn, CreateDateColumn, JoinColumn } from 'typeorm'
-import { Post } from './Post';
-import { User } from './User';
+import { BaseEntity, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Post } from './Post'
+import { User } from './User'
 
 @Entity()
 export class Like extends BaseEntity {

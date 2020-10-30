@@ -1,7 +1,17 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, OneToMany} from 'typeorm'
-import { User } from './User';
-import { Comment } from './Comment';
-import { Like } from './Like';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  // eslint-disable-next-line prettier/prettier
+  PrimaryGeneratedColumn
+} from 'typeorm'
+import { Comment } from './Comment'
+import { Like } from './Like'
+import { User } from './User'
 
 @Entity()
 export class Post extends BaseEntity {
