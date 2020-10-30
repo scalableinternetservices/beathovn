@@ -1,5 +1,17 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  // eslint-disable-next-line prettier/prettier
+  UpdateDateColumn
+} from 'typeorm'
 import { User as GraphqlUser, UserType } from '../graphql/schema.types'
+import { Comment } from './Comment'
+import { Following } from './Following'
+import { Like } from './Like'
 
 @Entity()
 export class User extends BaseEntity implements GraphqlUser {
@@ -29,4 +41,16 @@ export class User extends BaseEntity implements GraphqlUser {
     nullable: true,
   })
   name: string
+
+  @OneToMany(type => Like, like => like.user)
+  likes: Like[]
+
+  @OneToMany(type => Comment, comment => comment.user)
+  comments: Comment[]
+
+  @OneToMany(type => Following, following => following.followee)
+  followers: Following[]
+
+  @OneToMany(type => Following, following => following.follower)
+  following: Following[]
 }
