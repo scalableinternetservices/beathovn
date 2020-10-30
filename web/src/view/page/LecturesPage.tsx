@@ -9,7 +9,7 @@ import { Link } from '../nav/Link'
 import { AppRouteParams } from '../nav/route'
 import { Page } from './Page'
 
-interface LecturesPageProps extends RouteComponentProps, AppRouteParams {}
+interface LecturesPageProps extends RouteComponentProps, AppRouteParams { }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function LecturesPage(props: LecturesPageProps) {
@@ -198,7 +198,7 @@ function Lecture(props: {
 const Table = style('table', 'w-100 ba b--black')
 
 const Section = style('div', 'mb4 mid-gray ba b--mid-gray br2 pa3', (p: { $color?: ColorName }) => ({
-  borderLeftColor: Colors[p.$color || 'lemon'] + '!important',
+  borderLeftColor: Colors[p.$color || 'purple'] + '!important',
   borderLeftWidth: '3px',
 }))
 

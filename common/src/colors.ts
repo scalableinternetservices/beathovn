@@ -3,6 +3,7 @@ export const Colors = {
   mint: '#00e08f',
   lemon: '#FFD100',
   coral: '#ff5c8d',
+  purple: '#AF69EF',
 
   black: '#000000',
   ink: '#101011',
@@ -21,6 +22,7 @@ export const ColorsRGB = {
   mint: hexToRgb(Colors.mint)!,
   lemon: hexToRgb(Colors.lemon)!,
   coral: hexToRgb(Colors.coral)!,
+  purple: hexToRgb(Colors.purple),
 
   black: hexToRgb(Colors.black)!,
   ink: hexToRgb(Colors.ink)!,
@@ -37,6 +39,7 @@ export const LightColors = {
   mint: '#0fffa7',
   lemon: '#ffea5e',
   coral: '#ff749e',
+  purple: '#BE93D4',
 
   black: Colors.ink,
   ink: Colors.charcoal,
@@ -53,6 +56,7 @@ export const DarkColors = {
   mint: '#009d64',
   lemon: '#b0a508',
   coral: '#c14a6e',
+  purple: '#710193',
 
   black: Colors.black,
   ink: Colors.black,
@@ -69,6 +73,7 @@ export const ContrastColors = {
   mint: Colors.black,
   lemon: Colors.black,
   coral: Colors.black,
+  purple: Colors.black,
 
   black: Colors.silver,
   ink: Colors.silver,
@@ -87,10 +92,10 @@ function hexToRgb(hex: string) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
   return result
     ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
-      }
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16),
+    }
     : null
 }
 
@@ -142,7 +147,7 @@ export class Level {
     return level
   }
 
-  constructor(private level: LevelString) {}
+  constructor(private level: LevelString) { }
 
   /**
    * The Color object associated with this level.
@@ -173,6 +178,7 @@ export class Color implements GetStyles {
   public static blue = new Color('sky')
   public static green = new Color('mint')
   public static yellow = new Color('lemon')
+  public static purple = new Color('purple')
   public static red = new Color('coral')
   public static black = new Color('black')
   public static gray = new Color('silver')
@@ -181,7 +187,7 @@ export class Color implements GetStyles {
 
   private getStyle?: GetStyles = undefined
 
-  constructor(public colorName: ColorName) {}
+  constructor(public colorName: ColorName) { }
 
   get colorHex() {
     return Colors[this.colorName]

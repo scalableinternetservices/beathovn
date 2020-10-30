@@ -11,7 +11,10 @@ Tumblr for music recs.
 <img src="https://drive.google.com/uc?export=view&id=1wkyrb6pe6oww60eYDM12UJGUglNRluUO" width=30%>
 
 ### Kyle Tran
-<img src="https://i.postimg.cc/G20gqcVL/IMG-6450.jpg" width=30%>
+<img src="https://drive.google.com/uc?export=view&id=1ad47_B4DDiK_8JCLyT3RBMV5wTlp3Bxf" width=30%>
 
 ### Sriram Balachandran
 <img src="pfp/sriram.jpg" alt="Sriram next to a dumpling" width=30%/>
+
+### Vincent Pham
+<img src="pfp/vincentpham.jpg" alt="vtp" width=30%/>
