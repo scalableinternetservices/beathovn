@@ -3,7 +3,7 @@ import * as React from 'react'
 import { AppRouteParams } from '../nav/route'
 import { Page } from './Page'
 
-interface HomePageProps extends RouteComponentProps, AppRouteParams { }
+interface HomePageProps extends RouteComponentProps, AppRouteParams {}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function HomePage(props: HomePageProps) {
@@ -40,7 +40,7 @@ export function HomePage(props: HomePageProps) {
             <BodyText>
               <ul className="pl4">
                 <li>
-                  Follow the <Link href="https://github.com/rothfels/bespin#quickstart">project Quickstart</Link> to
+                  Follow the <Link href="https://github.com/rothfels/beathovn#quickstart">project Quickstart</Link> to
                   configure your dev environment.
                 </li>
                 <li>
