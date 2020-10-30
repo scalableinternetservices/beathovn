@@ -1,5 +1,6 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
-import { Post } from 'Post';
+import { BaseEntity, Entity, ManyToOne, PrimaryGeneratedColumn, CreateDateColumn, JoinColumn } from 'typeorm'
+import { Post } from './Post';
+import { User } from './User';
 
 @Entity()
 export class Like extends BaseEntity {
@@ -9,11 +10,11 @@ export class Like extends BaseEntity {
   @CreateDateColumn()
   timeCreated: Date
 
-  @OneToOne(() => Post)
+  @ManyToOne(type => Post, post => post.likes)
   @JoinColumn()
-  post: Post 
+  post: Post
 
-  @OneToOne(() => User)
+  @ManyToOne(type => User, user => user.likes)
   @JoinColumn()
   user: User
   // Associate with a post

@@ -1,6 +1,7 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn , OneToMany} from 'typeorm'
-import { User } from './User'
-import { Comment } from './Comment'
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, OneToMany} from 'typeorm'
+import { User } from './User';
+import { Comment } from './Comment';
+import { Like } from './Like';
 
 @Entity()
 export class Post extends BaseEntity {
@@ -11,18 +12,18 @@ export class Post extends BaseEntity {
   timeCreated: Date
 
   @Column()
-  musicLink: String
+  musicLink: string
 
   @Column()
-  commentary: String
+  commentary: string
 
-  @OneToMany(() => Comment)
+  @OneToMany(type => Comment, comment => comment.user)
   @JoinColumn()
-  comments: Comment
+  comments: Comment[]
 
-  @OneToMany(() => Like)
+  @OneToMany(type => Like, like => like.user)
   @JoinColumn()
-  likes: Like
+  likes: Like[]
 
   @OneToOne(() => User)
   @JoinColumn()
