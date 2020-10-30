@@ -39,6 +39,10 @@ type User {
   userType: UserType!
   email: String!
   name: String!
+  likes: [Like!]
+  comments: [Comment!]!
+  followers: [Following!]!
+  following: [Following!]!
 }
 
 enum UserType { ADMIN, USER }
@@ -83,6 +87,40 @@ type SurveyAnswer {
   answer: String!
   question: SurveyQuestion!
 }
+
+type Comment {
+  id: Int!
+  # timeCreated: Int!
+  text: String!
+  post: Post!
+  user: User!
+}
+
+type Following {
+  id: Int!
+  # timeCreated: Int!
+  follower: User!
+  followee: User!
+}
+
+type Like {
+  id: Int!
+  # timeCreated: Int!
+  post: Post!
+  user: User!
+}
+
+type Post {
+  id: Int!
+  # timeCreated: Int!
+  musicLink: String!
+  commentary: String
+  comments: [Comment!]!
+  likes: [Like!]!
+  user: User!
+}
+
+
 
 input SurveyInput {
   questionId: Int!
