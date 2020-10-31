@@ -17,6 +17,7 @@ export interface Query {
   self?: Maybe<User>
   surveys: Array<Survey>
   survey?: Maybe<Survey>
+  posts: Array<Post>
 }
 
 export interface QuerySurveyArgs {
@@ -264,6 +265,7 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QuerySurveyArgs, 'surveyId'>
   >
+  posts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType>
 }
 
 export type MutationResolvers<

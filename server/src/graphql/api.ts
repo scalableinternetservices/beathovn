@@ -28,6 +28,7 @@ export const graphqlRoot: Resolvers<Context> = {
     self: (_, args, ctx) => ctx.user,
     survey: async (_, { surveyId }) => (await Survey.findOne({ where: { id: surveyId } })) || null,
     surveys: () => Survey.find(),
+    posts: () => Post.find(),
   },
   Mutation: {
     answerSurvey: async (_, { input }, ctx) => {
@@ -62,6 +63,7 @@ export const graphqlRoot: Resolvers<Context> = {
         post.user = ctx.user
       }
       await post.save()
+      ctx.pubsub.publish('CREATE_POST', post)
       return post
     },
   },
