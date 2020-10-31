@@ -28,6 +28,8 @@ type Mutation {
 
   # Moves the survey to the next question (or starts it if it hasn't started). ADMIN only.
   nextSurveyQuestion (surveyId: Int!): Survey
+
+  createPost (input: PostInput!): Post!
 }
 
 type Subscription {
@@ -127,3 +129,7 @@ input SurveyInput {
   answer: String!
 }
 
+input PostInput {
+  musicLink: String!
+  commentary: String
+}

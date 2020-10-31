@@ -27,6 +27,7 @@ export interface Mutation {
   __typename?: 'Mutation'
   answerSurvey: Scalars['Boolean']
   nextSurveyQuestion?: Maybe<Survey>
+  createPost: Post
 }
 
 export interface MutationAnswerSurveyArgs {
@@ -35,6 +36,10 @@ export interface MutationAnswerSurveyArgs {
 
 export interface MutationNextSurveyQuestionArgs {
   surveyId: Scalars['Int']
+}
+
+export interface MutationCreatePostArgs {
+  input: PostInput
 }
 
 export interface Subscription {
@@ -124,6 +129,11 @@ export interface Post {
 export interface SurveyInput {
   questionId: Scalars['Int']
   answer: Scalars['String']
+}
+
+export interface PostInput {
+  musicLink: Scalars['String']
+  commentary?: Maybe<Scalars['String']>
 }
 
 export type ResolverTypeWrapper<T> = Promise<T> | T
@@ -219,6 +229,7 @@ export type ResolversTypes = {
   Like: ResolverTypeWrapper<Like>
   Post: ResolverTypeWrapper<Post>
   SurveyInput: SurveyInput
+  PostInput: PostInput
 }
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -238,6 +249,7 @@ export type ResolversParentTypes = {
   Like: Like
   Post: Post
   SurveyInput: SurveyInput
+  PostInput: PostInput
 }
 
 export type QueryResolvers<
@@ -270,6 +282,7 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationNextSurveyQuestionArgs, 'surveyId'>
   >
+  createPost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'input'>>
 }
 
 export type SubscriptionResolvers<

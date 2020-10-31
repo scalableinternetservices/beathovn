@@ -2,6 +2,7 @@ import { readFileSync } from 'fs'
 import { PubSub } from 'graphql-yoga'
 import path from 'path'
 import { check } from '../../../common/src/util'
+import { Post } from '../entities/Post'
 import { Survey } from '../entities/Survey'
 import { SurveyAnswer } from '../entities/SurveyAnswer'
 import { SurveyQuestion } from '../entities/SurveyQuestion'
@@ -50,6 +51,18 @@ export const graphqlRoot: Resolvers<Context> = {
       await survey.save()
       ctx.pubsub.publish('SURVEY_UPDATE_' + surveyId, survey)
       return survey
+    },
+    createPost: async (_, { input }, ctx) => {
+      const { musicLink, commentary } = input
+
+      const post = new Post()
+      post.musicLink = musicLink
+      post.commentary = commentary || ''
+      if (ctx.user) {
+        post.user = ctx.user
+      }
+      await post.save()
+      return post
     },
   },
   Subscription: {
