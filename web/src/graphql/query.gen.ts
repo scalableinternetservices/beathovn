@@ -24,6 +24,35 @@ export interface FetchUserContext {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: FetchPosts
+// ====================================================
+
+export interface FetchPosts_posts_user {
+  __typename: "User";
+  id: number;
+  name: string;
+  email: string;
+  userType: UserType;
+}
+
+export interface FetchPosts_posts {
+  __typename: "Post";
+  id: number;
+  musicLink: string;
+  commentary: string | null;
+  user: FetchPosts_posts_user;
+}
+
+export interface FetchPosts {
+  posts: FetchPosts_posts[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: FetchSurveys
 // ====================================================
 
@@ -137,6 +166,28 @@ export interface FetchSurveyVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreatePost
+// ====================================================
+
+export interface CreatePost_createPost {
+  __typename: "Post";
+  id: number;
+}
+
+export interface CreatePost {
+  createPost: CreatePost_createPost;
+}
+
+export interface CreatePostVariables {
+  input: PostInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: AnswerSurveyQuestion
 // ====================================================
 
@@ -185,6 +236,48 @@ export interface NextSurveyQuestion {
 
 export interface NextSurveyQuestionVariables {
   surveyId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: User
+// ====================================================
+
+export interface User {
+  __typename: "User";
+  id: number;
+  name: string;
+  email: string;
+  userType: UserType;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: Post
+// ====================================================
+
+export interface Post_user {
+  __typename: "User";
+  id: number;
+  name: string;
+  email: string;
+  userType: UserType;
+}
+
+export interface Post {
+  __typename: "Post";
+  id: number;
+  musicLink: string;
+  commentary: string | null;
+  user: Post_user;
 }
 
 /* tslint:disable */
@@ -252,6 +345,11 @@ export interface SurveyQuestion {
 export enum UserType {
   ADMIN = "ADMIN",
   USER = "USER",
+}
+
+export interface PostInput {
+  musicLink: string;
+  commentary?: string | null;
 }
 
 export interface SurveyInput {

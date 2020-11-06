@@ -20,6 +20,8 @@ type Query {
 
   surveys: [Survey!]!
   survey (surveyId: Int!): Survey
+
+  posts: [Post!]!
 }
 
 type Mutation {
@@ -28,6 +30,8 @@ type Mutation {
 
   # Moves the survey to the next question (or starts it if it hasn't started). ADMIN only.
   nextSurveyQuestion (surveyId: Int!): Survey
+
+  createPost (input: PostInput!): Post!
 }
 
 type Subscription {
@@ -39,6 +43,10 @@ type User {
   userType: UserType!
   email: String!
   name: String!
+  likes: [Like!]
+  comments: [Comment!]!
+  followers: [Following!]!
+  following: [Following!]!
 }
 
 enum UserType { ADMIN, USER }
@@ -84,8 +92,46 @@ type SurveyAnswer {
   question: SurveyQuestion!
 }
 
+type Comment {
+  id: Int!
+  # timeCreated: Int!
+  text: String!
+  post: Post!
+  user: User!
+}
+
+type Following {
+  id: Int!
+  # timeCreated: Int!
+  follower: User!
+  followee: User!
+}
+
+type Like {
+  id: Int!
+  # timeCreated: Int!
+  post: Post!
+  user: User!
+}
+
+type Post {
+  id: Int!
+  # timeCreated: Int!
+  musicLink: String!
+  commentary: String
+  comments: [Comment!]!
+  likes: [Like!]!
+  user: User!
+}
+
+
+
 input SurveyInput {
   questionId: Int!
   answer: String!
 }
 
+input PostInput {
+  musicLink: String!
+  commentary: String
+}
