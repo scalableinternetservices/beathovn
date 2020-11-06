@@ -12,10 +12,23 @@ export interface Scalars {
   Float: number
 }
 
+export interface Query {
+  __typename?: 'Query'
+  self?: Maybe<User>
+  surveys: Array<Survey>
+  survey?: Maybe<Survey>
+  posts: Array<Post>
+}
+
+export interface QuerySurveyArgs {
+  surveyId: Scalars['Int']
+}
+
 export interface Mutation {
   __typename?: 'Mutation'
   answerSurvey: Scalars['Boolean']
   nextSurveyQuestion?: Maybe<Survey>
+  createPost: Post
 }
 
 export interface MutationAnswerSurveyArgs {
@@ -26,15 +39,8 @@ export interface MutationNextSurveyQuestionArgs {
   surveyId: Scalars['Int']
 }
 
-export interface Query {
-  __typename?: 'Query'
-  self?: Maybe<User>
-  surveys: Array<Survey>
-  survey?: Maybe<Survey>
-}
-
-export interface QuerySurveyArgs {
-  surveyId: Scalars['Int']
+export interface MutationCreatePostArgs {
+  input: PostInput
 }
 
 export interface Subscription {
@@ -44,6 +50,23 @@ export interface Subscription {
 
 export interface SubscriptionSurveyUpdatesArgs {
   surveyId: Scalars['Int']
+}
+
+export interface User {
+  __typename?: 'User'
+  id: Scalars['Int']
+  userType: UserType
+  email: Scalars['String']
+  name: Scalars['String']
+  likes?: Maybe<Array<Like>>
+  comments: Array<Comment>
+  followers: Array<Following>
+  following: Array<Following>
+}
+
+export enum UserType {
+  Admin = 'ADMIN',
+  User = 'USER',
 }
 
 export interface Survey {
@@ -56,18 +79,6 @@ export interface Survey {
   questions: Array<Maybe<SurveyQuestion>>
 }
 
-export interface SurveyAnswer {
-  __typename?: 'SurveyAnswer'
-  id: Scalars['Int']
-  answer: Scalars['String']
-  question: SurveyQuestion
-}
-
-export interface SurveyInput {
-  questionId: Scalars['Int']
-  answer: Scalars['String']
-}
-
 export interface SurveyQuestion {
   __typename?: 'SurveyQuestion'
   id: Scalars['Int']
@@ -77,17 +88,53 @@ export interface SurveyQuestion {
   survey: Survey
 }
 
-export interface User {
-  __typename?: 'User'
+export interface SurveyAnswer {
+  __typename?: 'SurveyAnswer'
   id: Scalars['Int']
-  userType: UserType
-  email: Scalars['String']
-  name: Scalars['String']
+  answer: Scalars['String']
+  question: SurveyQuestion
 }
 
-export enum UserType {
-  Admin = 'ADMIN',
-  User = 'USER',
+export interface Comment {
+  __typename?: 'Comment'
+  id: Scalars['Int']
+  text: Scalars['String']
+  post: Post
+  user: User
+}
+
+export interface Following {
+  __typename?: 'Following'
+  id: Scalars['Int']
+  follower: User
+  followee: User
+}
+
+export interface Like {
+  __typename?: 'Like'
+  id: Scalars['Int']
+  post: Post
+  user: User
+}
+
+export interface Post {
+  __typename?: 'Post'
+  id: Scalars['Int']
+  musicLink: Scalars['String']
+  commentary?: Maybe<Scalars['String']>
+  comments: Array<Comment>
+  likes: Array<Like>
+  user: User
+}
+
+export interface SurveyInput {
+  questionId: Scalars['Int']
+  answer: Scalars['String']
+}
+
+export interface PostInput {
+  musicLink: Scalars['String']
+  commentary?: Maybe<Scalars['String']>
 }
 
 export type ResolverTypeWrapper<T> = Promise<T> | T
@@ -168,32 +215,57 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>
-  User: ResolverTypeWrapper<User>
   Int: ResolverTypeWrapper<Scalars['Int']>
-  UserType: UserType
-  String: ResolverTypeWrapper<Scalars['String']>
-  Survey: ResolverTypeWrapper<Survey>
+  Mutation: ResolverTypeWrapper<{}>
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>
+  Subscription: ResolverTypeWrapper<{}>
+  User: ResolverTypeWrapper<User>
+  String: ResolverTypeWrapper<Scalars['String']>
+  UserType: UserType
+  Survey: ResolverTypeWrapper<Survey>
   SurveyQuestion: ResolverTypeWrapper<SurveyQuestion>
   SurveyAnswer: ResolverTypeWrapper<SurveyAnswer>
-  Mutation: ResolverTypeWrapper<{}>
+  Comment: ResolverTypeWrapper<Comment>
+  Following: ResolverTypeWrapper<Following>
+  Like: ResolverTypeWrapper<Like>
+  Post: ResolverTypeWrapper<Post>
   SurveyInput: SurveyInput
-  Subscription: ResolverTypeWrapper<{}>
+  PostInput: PostInput
 }
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Query: {}
-  User: User
   Int: Scalars['Int']
+  Mutation: {}
+  Boolean: Scalars['Boolean']
+  Subscription: {}
+  User: User
   String: Scalars['String']
   Survey: Survey
-  Boolean: Scalars['Boolean']
   SurveyQuestion: SurveyQuestion
   SurveyAnswer: SurveyAnswer
-  Mutation: {}
+  Comment: Comment
+  Following: Following
+  Like: Like
+  Post: Post
   SurveyInput: SurveyInput
-  Subscription: {}
+  PostInput: PostInput
+}
+
+export type QueryResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
+> = {
+  self?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
+  surveys?: Resolver<Array<ResolversTypes['Survey']>, ParentType, ContextType>
+  survey?: Resolver<
+    Maybe<ResolversTypes['Survey']>,
+    ParentType,
+    ContextType,
+    RequireFields<QuerySurveyArgs, 'surveyId'>
+  >
+  posts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType>
 }
 
 export type MutationResolvers<
@@ -212,20 +284,7 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationNextSurveyQuestionArgs, 'surveyId'>
   >
-}
-
-export type QueryResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
-> = {
-  self?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
-  surveys?: Resolver<Array<ResolversTypes['Survey']>, ParentType, ContextType>
-  survey?: Resolver<
-    Maybe<ResolversTypes['Survey']>,
-    ParentType,
-    ContextType,
-    RequireFields<QuerySurveyArgs, 'surveyId'>
-  >
+  createPost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'input'>>
 }
 
 export type SubscriptionResolvers<
@@ -241,6 +300,21 @@ export type SubscriptionResolvers<
   >
 }
 
+export type UserResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']
+> = {
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  userType?: Resolver<ResolversTypes['UserType'], ParentType, ContextType>
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  likes?: Resolver<Maybe<Array<ResolversTypes['Like']>>, ParentType, ContextType>
+  comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>
+  followers?: Resolver<Array<ResolversTypes['Following']>, ParentType, ContextType>
+  following?: Resolver<Array<ResolversTypes['Following']>, ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>
+}
+
 export type SurveyResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Survey'] = ResolversParentTypes['Survey']
@@ -251,16 +325,6 @@ export type SurveyResolvers<
   isCompleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
   currentQuestion?: Resolver<Maybe<ResolversTypes['SurveyQuestion']>, ParentType, ContextType>
   questions?: Resolver<Array<Maybe<ResolversTypes['SurveyQuestion']>>, ParentType, ContextType>
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>
-}
-
-export type SurveyAnswerResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['SurveyAnswer'] = ResolversParentTypes['SurveyAnswer']
-> = {
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  answer?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  question?: Resolver<ResolversTypes['SurveyQuestion'], ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
@@ -276,25 +340,72 @@ export type SurveyQuestionResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
-export type UserResolvers<
+export type SurveyAnswerResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']
+  ParentType extends ResolversParentTypes['SurveyAnswer'] = ResolversParentTypes['SurveyAnswer']
 > = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  userType?: Resolver<ResolversTypes['UserType'], ParentType, ContextType>
-  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  answer?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  question?: Resolver<ResolversTypes['SurveyQuestion'], ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>
+}
+
+export type CommentResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']
+> = {
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  post?: Resolver<ResolversTypes['Post'], ParentType, ContextType>
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>
+}
+
+export type FollowingResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Following'] = ResolversParentTypes['Following']
+> = {
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  follower?: Resolver<ResolversTypes['User'], ParentType, ContextType>
+  followee?: Resolver<ResolversTypes['User'], ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>
+}
+
+export type LikeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Like'] = ResolversParentTypes['Like']
+> = {
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  post?: Resolver<ResolversTypes['Post'], ParentType, ContextType>
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>
+}
+
+export type PostResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']
+> = {
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  musicLink?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  commentary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>
+  likes?: Resolver<Array<ResolversTypes['Like']>, ParentType, ContextType>
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
 export type Resolvers<ContextType = any> = {
-  Mutation?: MutationResolvers<ContextType>
   Query?: QueryResolvers<ContextType>
+  Mutation?: MutationResolvers<ContextType>
   Subscription?: SubscriptionResolvers<ContextType>
-  Survey?: SurveyResolvers<ContextType>
-  SurveyAnswer?: SurveyAnswerResolvers<ContextType>
-  SurveyQuestion?: SurveyQuestionResolvers<ContextType>
   User?: UserResolvers<ContextType>
+  Survey?: SurveyResolvers<ContextType>
+  SurveyQuestion?: SurveyQuestionResolvers<ContextType>
+  SurveyAnswer?: SurveyAnswerResolvers<ContextType>
+  Comment?: CommentResolvers<ContextType>
+  Following?: FollowingResolvers<ContextType>
+  Like?: LikeResolvers<ContextType>
+  Post?: PostResolvers<ContextType>
 }
 
 /**
