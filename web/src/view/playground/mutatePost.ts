@@ -10,7 +10,7 @@ const createPostMutation = gql`
   }
 `
 
-export function throwCandy(input: PostInput) {
+export function createPost(input: PostInput) {
   return getApolloClient().mutate<CreatePost>({
     mutation: createPostMutation,
     variables: { input },

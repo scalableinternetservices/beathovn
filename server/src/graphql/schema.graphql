@@ -43,7 +43,7 @@ type User {
   userType: UserType!
   email: String!
   name: String!
-  likes: [Like!]
+  #likes: [Like!]
   comments: [Comment!]!
   followers: [Following!]!
   following: [Following!]!
@@ -121,7 +121,7 @@ type Post {
   commentary: String
   comments: [Comment!]!
   likes: [Like!]!
-  user: User!
+  user: User
 }
 
 

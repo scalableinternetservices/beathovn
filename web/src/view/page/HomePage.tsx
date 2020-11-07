@@ -1,11 +1,50 @@
+import { useQuery } from '@apollo/client'
 import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
+import { FetchPosts } from '../../graphql/query.gen'
 import { AppRouteParams } from '../nav/route'
+import { fetchPosts } from '../playground/fetchPost'
 import { Page } from './Page'
-
-interface HomePageProps extends RouteComponentProps, AppRouteParams {}
+import { PostForm } from './PostForm'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface PostsPageProps extends RouteComponentProps, AppRouteParams { }
+
+export function PostsPage(props: PostsPageProps) {
+  //const [posts, setPosts] = useState([])
+  const { loading, data } = useQuery<FetchPosts>(fetchPosts)
+
+  if (loading) {
+    return (
+      <div>Loading....</div>
+    )
+  }
+  if (!data || data.posts.length === 0) {
+    return (
+      <Page>
+        <PostForm />
+        <div>no posts</div>
+      </Page>
+    )
+  }
+  console.log("Posts length is : " + data.posts.length)
+  for (var i = 0; i < data.posts.length; i++) {
+    console.log(data.posts[i].commentary)
+  }
+  return (
+    <Page>
+      <PostForm />
+      <div>Here are our posts</div>
+      {data.posts.map((p, i) => (
+        <div key={i}>
+          {p.musicLink}
+          {p.commentary}
+        </div>
+      ))}
+    </Page>
+  )
+}
+/*
 export function HomePage(props: HomePageProps) {
   return (
     <Page>
@@ -146,10 +185,9 @@ export function HomePage(props: HomePageProps) {
             </BodyText>
           </Section>
         </RContent>
-      </Content> */}
-    </Page>
+      </Content> }
   )
-}
+} */
 
 // const Hero = style('div', 'mb4 w-100 ba b--mid-gray br2 pa3 tc', {
 //   borderLeftColor: Colors.purple + '!important',

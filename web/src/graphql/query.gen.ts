@@ -40,7 +40,7 @@ export interface FetchPosts_posts {
   id: number;
   musicLink: string;
   commentary: string | null;
-  user: FetchPosts_posts_user;
+  user: FetchPosts_posts_user | null;
 }
 
 export interface FetchPosts {
@@ -277,7 +277,7 @@ export interface Post {
   id: number;
   musicLink: string;
   commentary: string | null;
-  user: Post_user;
+  user: Post_user | null;
 }
 
 /* tslint:disable */
