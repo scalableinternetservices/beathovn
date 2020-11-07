@@ -28,7 +28,7 @@ export interface Mutation {
   __typename?: 'Mutation'
   answerSurvey: Scalars['Boolean']
   nextSurveyQuestion?: Maybe<Survey>
-  createPost: Post
+  createPost?: Maybe<Post>
 }
 
 export interface MutationAnswerSurveyArgs {
@@ -283,7 +283,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationNextSurveyQuestionArgs, 'surveyId'>
   >
-  createPost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'input'>>
+  createPost?: Resolver<
+    Maybe<ResolversTypes['Post']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreatePostArgs, 'input'>
+  >
 }
 
 export type SubscriptionResolvers<

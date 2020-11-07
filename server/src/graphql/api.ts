@@ -63,7 +63,7 @@ export const graphqlRoot: Resolvers<Context> = {
         post.user = ctx.user
       }
       await post.save()
-      ctx.pubsub.publish('CREATE_POST', post)
+      // ctx.pubsub.publish('CREATE_POST', post)
       return post
     },
   },

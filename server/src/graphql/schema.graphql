@@ -31,7 +31,7 @@ type Mutation {
   # Moves the survey to the next question (or starts it if it hasn't started). ADMIN only.
   nextSurveyQuestion (surveyId: Int!): Survey
 
-  createPost (input: PostInput!): Post!
+  createPost (input: PostInput!): Post
 }
 
 type Subscription {
@@ -123,8 +123,6 @@ type Post {
   likes: [Like!]!
   user: User
 }
-
-
 
 input SurveyInput {
   questionId: Int!
