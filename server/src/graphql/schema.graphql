@@ -22,6 +22,11 @@ type Query {
   survey (surveyId: Int!): Survey
 
   posts: [Post!]!
+
+  # Who is this user following
+  following (userId: Int!): [User!]!
+  # Who follows this user
+  followers (userId: Int!): [User!]!
 }
 
 type Mutation {
@@ -31,7 +36,13 @@ type Mutation {
   # Moves the survey to the next question (or starts it if it hasn't started). ADMIN only.
   nextSurveyQuestion (surveyId: Int!): Survey
 
-  createPost (input: PostInput!): Post
+  createPost (input: PostInput!): Post!
+
+  createComment(input: CommentInput!): Comment!
+
+  likePost (postId: Int!): Boolean
+
+  followUser (input: FollowInput!): Boolean
 }
 
 type Subscription {
@@ -132,4 +143,20 @@ input SurveyInput {
 input PostInput {
   musicLink: String!
   commentary: String
+}
+
+input CommentInput {
+  text: String!
+  postId: Int!
+}
+
+input FollowInput {
+  followerId: Int!
+  followeeId: Int!
+}
+
+input PostCommentInput {
+  postId: Int!
+  limit: Int
+  offset: Int
 }

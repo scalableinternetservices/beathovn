@@ -182,11 +182,11 @@ export interface CreatePost_createPost {
   id: number;
   musicLink: string;
   commentary: string | null;
-  user: CreatePost_createPost_user;
+  user: CreatePost_createPost_user | null;
 }
 
 export interface CreatePost {
-  createPost: CreatePost_createPost | null;
+  createPost: CreatePost_createPost;
 }
 
 export interface CreatePostVariables {

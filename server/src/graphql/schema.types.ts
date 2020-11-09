@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { GraphQLResolveInfo } from 'graphql'
 export type Maybe<T> = T | null
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
@@ -18,17 +19,30 @@ export interface Query {
   surveys: Array<Survey>
   survey?: Maybe<Survey>
   posts: Array<Post>
+  following: Array<User>
+  followers: Array<User>
 }
 
 export interface QuerySurveyArgs {
   surveyId: Scalars['Int']
 }
 
+export interface QueryFollowingArgs {
+  userId: Scalars['Int']
+}
+
+export interface QueryFollowersArgs {
+  userId: Scalars['Int']
+}
+
 export interface Mutation {
   __typename?: 'Mutation'
   answerSurvey: Scalars['Boolean']
   nextSurveyQuestion?: Maybe<Survey>
-  createPost?: Maybe<Post>
+  createPost: Post
+  createComment: Comment
+  likePost?: Maybe<Scalars['Boolean']>
+  followUser?: Maybe<Scalars['Boolean']>
 }
 
 export interface MutationAnswerSurveyArgs {
@@ -41,6 +55,18 @@ export interface MutationNextSurveyQuestionArgs {
 
 export interface MutationCreatePostArgs {
   input: PostInput
+}
+
+export interface MutationCreateCommentArgs {
+  input: CommentInput
+}
+
+export interface MutationLikePostArgs {
+  postId: Scalars['Int']
+}
+
+export interface MutationFollowUserArgs {
+  input: FollowInput
 }
 
 export interface Subscription {
@@ -134,6 +160,22 @@ export interface SurveyInput {
 export interface PostInput {
   musicLink: Scalars['String']
   commentary?: Maybe<Scalars['String']>
+}
+
+export interface CommentInput {
+  text: Scalars['String']
+  postId: Scalars['Int']
+}
+
+export interface FollowInput {
+  followerId: Scalars['Int']
+  followeeId: Scalars['Int']
+}
+
+export interface PostCommentInput {
+  postId: Scalars['Int']
+  limit?: Maybe<Scalars['Int']>
+  offset?: Maybe<Scalars['Int']>
 }
 
 export type ResolverTypeWrapper<T> = Promise<T> | T
@@ -230,6 +272,9 @@ export type ResolversTypes = {
   Post: ResolverTypeWrapper<Post>
   SurveyInput: SurveyInput
   PostInput: PostInput
+  CommentInput: CommentInput
+  FollowInput: FollowInput
+  PostCommentInput: PostCommentInput
 }
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -250,6 +295,9 @@ export type ResolversParentTypes = {
   Post: Post
   SurveyInput: SurveyInput
   PostInput: PostInput
+  CommentInput: CommentInput
+  FollowInput: FollowInput
+  PostCommentInput: PostCommentInput
 }
 
 export type QueryResolvers<
@@ -265,6 +313,18 @@ export type QueryResolvers<
     RequireFields<QuerySurveyArgs, 'surveyId'>
   >
   posts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType>
+  following?: Resolver<
+    Array<ResolversTypes['User']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryFollowingArgs, 'userId'>
+  >
+  followers?: Resolver<
+    Array<ResolversTypes['User']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryFollowersArgs, 'userId'>
+  >
 }
 
 export type MutationResolvers<
@@ -283,11 +343,24 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationNextSurveyQuestionArgs, 'surveyId'>
   >
-  createPost?: Resolver<
-    Maybe<ResolversTypes['Post']>,
+  createPost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'input'>>
+  createComment?: Resolver<
+    ResolversTypes['Comment'],
     ParentType,
     ContextType,
-    RequireFields<MutationCreatePostArgs, 'input'>
+    RequireFields<MutationCreateCommentArgs, 'input'>
+  >
+  likePost?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationLikePostArgs, 'postId'>
+  >
+  followUser?: Resolver<
+    Maybe<ResolversTypes['Boolean']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationFollowUserArgs, 'input'>
   >
 }
 
