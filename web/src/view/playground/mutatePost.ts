@@ -5,7 +5,7 @@ import { CreatePost, PostInput } from '../../graphql/query.gen'
 const createPostMutation = gql`
   mutation CreatePost($input: PostInput!) {
     createPost(input: $input) {
-      ...Post
+      id
     }
   }
 `
