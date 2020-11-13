@@ -10,16 +10,16 @@ import { UserContext } from './user'
 
 export function Login() {
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  // const [password, setPassword] = useState('')
   const [err, setError] = useState({ email: false, password: false })
   const { user } = useContext(UserContext)
 
   // reset error when email/password change
   useEffect(() => setError({ ...err, email: !validateEmail(email) }), [email])
-  useEffect(() => setError({ ...err, password: false }), [password])
+  // useEffect(() => setError({ ...err, password: false }), [password])
 
   function login() {
-    if (!validate(email, password, setError)) {
+    if (!validate(email, setError)) {
       toastErr('invalid email/password')
       return
     }
@@ -27,7 +27,7 @@ export function Login() {
     fetch('/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password: "unnecessaryPassword" }),
     })
       .then(res => {
         check(res.ok, 'response status ' + res.status)
@@ -52,14 +52,14 @@ export function Login() {
         </label>
         <Input $hasError={err.email} $onChange={setEmail} $onSubmit={login} name="email" type="email" />
       </div>
-      <div className="mt3">
+      {/* <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="password">
           Password
         </label>
         <Input $hasError={err.password} $onChange={setPassword} $onSubmit={login} name="password" type="password" />
-      </div>
+      </div> */}
       <div className="mt3">
-        <Button onClick={login}>Sign Up</Button>
+        <Button onClick={login}>Login</Button>
       </div>
     </>
   )
@@ -93,9 +93,9 @@ function validateEmail(email: string) {
 
 function validate(
   email: string,
-  password: string,
   setError: React.Dispatch<React.SetStateAction<{ email: boolean; password: boolean }>>
 ) {
+  const password = "TODO: remove"
   const validEmail = validateEmail(email)
   const validPassword = Boolean(password)
   console.log('valid', validEmail, validPassword)
