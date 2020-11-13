@@ -5,10 +5,12 @@ import { FetchPosts } from '../../graphql/query.gen'
 import { AppRouteParams } from '../nav/route'
 import { fetchPosts } from '../playground/fetchPost'
 import { Page } from './Page'
+import { Post } from './Post'
 import { PostForm } from './PostForm'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface PostsPageProps extends RouteComponentProps, AppRouteParams { }
+
 
 export function PostsPage(props: PostsPageProps) {
   //const [posts, setPosts] = useState([])
@@ -34,11 +36,9 @@ export function PostsPage(props: PostsPageProps) {
   return (
     <Page>
       <PostForm />
-      <div>Here are our posts</div>
       {data.posts.map((p, i) => (
         <div key={i}>
-          {p.musicLink}
-          {p.commentary}
+          <Post musicLink={p.musicLink} commentary={p.commentary} />
         </div>
       ))}
     </Page>
