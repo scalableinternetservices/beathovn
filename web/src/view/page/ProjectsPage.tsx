@@ -1,5 +1,6 @@
 import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
+import { Login } from '../auth/Login'
 import { AppRouteParams } from '../nav/route'
 import { Page } from './Page'
 
@@ -9,15 +10,7 @@ interface ProjectsPageProps extends RouteComponentProps, AppRouteParams { }
 export function ProjectsPage(props: ProjectsPageProps) {
   return (
     <Page>
-      {/* <Section>
-        <ProjectOverview />
-        <Spacer $h5 />
-        <ProjectRequirements />
-        <Spacer $h5 />
-        <ProjectIdeas />
-        <Spacer $h5 />
-        <SprintSchedule />
-      </Section> */}
+      <Login />
     </Page>
   )
 }

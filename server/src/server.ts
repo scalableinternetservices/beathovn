@@ -52,15 +52,50 @@ server.express.get('/app/*', (req, res) => {
 })
 
 server.express.post(
+  '/auth/signup',
+  asyncRoute(async (req, res) => {
+    console.log('POST /auth/signup')
+    const { email } = req.body
+
+    if(!!(await User.findOne({ where: { email }}))) {
+      res.status(403).send('Email already in use.')
+      return
+    }
+
+    const user = new User()
+    user.email = email
+    user.name = email.split("@")[0]
+
+    await user.save()
+
+    // Create session for user to be logged in with
+    const authToken = uuidv4()
+    const session = new Session()
+    session.authToken = authToken
+    session.user = user
+
+    await Session.save(session).then(s => console.log('saved session ' + s.id))
+
+    const SESSION_DURATION = 30 * 24 * 60 * 60 * 1000 // 30 days
+    res
+      .status(200)
+      .cookie('authToken', authToken, { maxAge: SESSION_DURATION, path: '/', httpOnly: true, secure: Config.isProd })
+      .send('Success!')
+  })
+)
+
+server.express.post(
   '/auth/login',
   asyncRoute(async (req, res) => {
     console.log('POST /auth/login')
-    const email = req.body.email
-    const password = req.body.password
+    const { email, password } = req.body
+    // const password = req.body.password
 
     const user = await User.findOne({ where: { email } })
-    if (!user || password !== Config.adminPassword) {
-      res.status(403).send('Forbidden')
+    if (!user) {
+      if ((password || !password)) {
+        res.status(400).send('User does not exist.')
+      }
       return
     }
 

@@ -1,6 +1,6 @@
 import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
-import { Login } from '../auth/Login'
+import { Signup } from '../auth/Signup'
 import { AppRouteParams, PlaygroundApp } from '../nav/route'
 import { Page } from './Page'
 
@@ -18,8 +18,8 @@ function getPlaygroundApp(app?: PlaygroundApp) {
     // case PlaygroundApp.SURVEYS:
     //   return <Surveys />
     case PlaygroundApp.LOGIN:
-      return <Login />
+      return <Signup />
     default:
-      return <Login />
+      return <Signup />
   }
 }
