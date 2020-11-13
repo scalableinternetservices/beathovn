@@ -92,16 +92,22 @@ export const graphqlRoot: Resolvers<Context> = {
       comment.post = post
       if (ctx.user) {
         comment.user = ctx.user
+        if (!comment.user.comments) {
+          comment.user.comments = []
+        }
       }
       await comment.save()
 
       // Add comment to post
+      if (!post.comments){
+        post.comments = []
+      }
       post.comments.push(comment)
       await post.save()
 
       // Add comment to user
-      comment?.user.comments.push(comment)
-      await comment?.user.save()
+      comment.user?.comments.push(comment)
+      await comment.user?.save()
 
       return comment
     },
@@ -116,20 +122,27 @@ export const graphqlRoot: Resolvers<Context> = {
       like.post = post
       if (ctx.user) {
         like.user = ctx.user
+        if (!like.user.comments) {
+          like.user.comments = []
+        }
       }
       await like.save()
 
       // Add like to post
+      if (!post.likes) {
+        post.likes = []
+      }
       post.likes.push(like)
       await post.save()
 
       // Add like to user
-      like?.user.likes.push(like)
-      await like?.user.save()
+      like.user?.likes.push(like)
+      await like.user?.save()
 
       return true
     },
     followUser: async (_, { input }, ctx) => {
+      // TODO: GET FOLLOWERiD FROM CONTEXT
       const { followerId, followeeId } = input
       const followerUser = check(await User.findOne({ where: { id: followerId } }))
       const followeeUser = check(await User.findOne({ where: { id: followeeId } }))
@@ -145,7 +158,14 @@ export const graphqlRoot: Resolvers<Context> = {
 
       await followingRecord.save()
 
+      if (!followerUser.following) {
+        followerUser.following = []
+      }
       followerUser.following.push(followingRecord)
+
+      if (!followeeUser.followers) {
+        followeeUser.followers = []
+      }
       followeeUser.followers.push(followingRecord)
       await followerUser.save()
       await followeeUser.save()
