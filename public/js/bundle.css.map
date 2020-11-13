@@ -1,0 +1,1 @@
+{"version":3,"sources":["view/page/Post.css"],"names":[],"mappings":"AAAA;AACA;AACA;AACA;AACA;AACA;AACA","file":"bundle.css","sourceRoot":"../../web/src","sourcesContent":[".card {\n  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);\n}\n\n.container {\n  padding: 2px 16px;\n}"]}
