@@ -1,3 +1,4 @@
+import CSS from 'csstype'
 import * as React from 'react'
 import { useState } from 'react'
 import { Button } from '../../style/button'
@@ -5,6 +6,12 @@ import { Input } from '../../style/input'
 import { createPost } from '../playground/mutatePost'
 import { handleError } from '../toast/error'
 
+const divContainerStyle: CSS.Properties = {
+  backgroundColor: 'rgba(255, 255, 255, 0.85)',
+  boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
+  padding: '20px',
+  margin: '10px'
+}
 
 export function PostForm() {
   const [commentary, setCommentary] = useState('')
@@ -17,7 +24,7 @@ export function PostForm() {
   }
 
   return (
-    <>
+    <div style={divContainerStyle}>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="email">
           Music Link
@@ -33,7 +40,7 @@ export function PostForm() {
       <div className="mt3">
         <Button onClick={() => submitForm(musicLink, commentary)}>Submit Post</Button>
       </div>
-    </>
+    </div>
   )
 }
 
