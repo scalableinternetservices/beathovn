@@ -25,6 +25,7 @@ export function PostForm() {
 
   return (
     <div style={divContainerStyle}>
+      <p>Whatcha been listening to?</p>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="email">
           Music Link
