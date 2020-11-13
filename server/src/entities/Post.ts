@@ -4,8 +4,9 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  OneToMany,
-  OneToOne,
+
+  ManyToOne, OneToMany,
+
   // eslint-disable-next-line prettier/prettier
   PrimaryGeneratedColumn
 } from 'typeorm'
@@ -35,7 +36,7 @@ export class Post extends BaseEntity {
   @JoinColumn()
   likes: Like[]
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   @JoinColumn()
   user: User
   // Asociated with User, many to one relationsihp
