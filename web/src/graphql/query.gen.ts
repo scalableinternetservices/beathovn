@@ -24,6 +24,56 @@ export interface FetchUserContext {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: FetchFollowing
+// ====================================================
+
+export interface FetchFollowing_following {
+  __typename: "User";
+  id: number;
+  name: string;
+  email: string;
+  userType: UserType;
+}
+
+export interface FetchFollowing {
+  following: FetchFollowing_following[];
+}
+
+export interface FetchFollowingVariables {
+  userId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: FetchFollowers
+// ====================================================
+
+export interface FetchFollowers_followers {
+  __typename: "User";
+  id: number;
+  name: string;
+  email: string;
+  userType: UserType;
+}
+
+export interface FetchFollowers {
+  followers: FetchFollowers_followers[];
+}
+
+export interface FetchFollowersVariables {
+  userId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: FetchPosts
 // ====================================================
 
