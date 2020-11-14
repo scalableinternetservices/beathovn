@@ -77,6 +77,21 @@ export interface FetchFollowersVariables {
 // GraphQL query operation: FetchPosts
 // ====================================================
 
+export interface FetchPosts_posts_comments_user {
+  __typename: "User";
+  id: number;
+  name: string;
+  email: string;
+  userType: UserType;
+}
+
+export interface FetchPosts_posts_comments {
+  __typename: "Comment";
+  id: number;
+  text: string;
+  user: FetchPosts_posts_comments_user;
+}
+
 export interface FetchPosts_posts_user {
   __typename: "User";
   id: number;
@@ -90,6 +105,7 @@ export interface FetchPosts_posts {
   id: number;
   musicLink: string;
   commentary: string | null;
+  comments: FetchPosts_posts_comments[];
   user: FetchPosts_posts_user | null;
 }
 
@@ -216,6 +232,28 @@ export interface FetchSurveyVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateComment
+// ====================================================
+
+export interface CreateComment_createComment {
+  __typename: "Comment";
+  id: number;
+}
+
+export interface CreateComment {
+  createComment: CreateComment_createComment;
+}
+
+export interface CreateCommentVariables {
+  input: CommentInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: FollowUser
 // ====================================================
 
@@ -328,8 +366,47 @@ export interface User {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: Comment
+// ====================================================
+
+export interface Comment_user {
+  __typename: "User";
+  id: number;
+  name: string;
+  email: string;
+  userType: UserType;
+}
+
+export interface Comment {
+  __typename: "Comment";
+  id: number;
+  text: string;
+  user: Comment_user;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: Post
 // ====================================================
+
+export interface Post_comments_user {
+  __typename: "User";
+  id: number;
+  name: string;
+  email: string;
+  userType: UserType;
+}
+
+export interface Post_comments {
+  __typename: "Comment";
+  id: number;
+  text: string;
+  user: Post_comments_user;
+}
 
 export interface Post_user {
   __typename: "User";
@@ -344,6 +421,7 @@ export interface Post {
   id: number;
   musicLink: string;
   commentary: string | null;
+  comments: Post_comments[];
   user: Post_user | null;
 }
 
@@ -412,6 +490,11 @@ export interface SurveyQuestion {
 export enum UserType {
   ADMIN = "ADMIN",
   USER = "USER",
+}
+
+export interface CommentInput {
+  text: string;
+  postId: number;
 }
 
 export interface FollowInput {
