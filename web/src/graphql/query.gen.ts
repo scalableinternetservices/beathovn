@@ -232,6 +232,28 @@ export interface FetchSurveyVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateComment
+// ====================================================
+
+export interface CreateComment_createComment {
+  __typename: "Comment";
+  id: number;
+}
+
+export interface CreateComment {
+  createComment: CreateComment_createComment;
+}
+
+export interface CreateCommentVariables {
+  input: CommentInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: FollowUser
 // ====================================================
 
@@ -468,6 +490,11 @@ export interface SurveyQuestion {
 export enum UserType {
   ADMIN = "ADMIN",
   USER = "USER",
+}
+
+export interface CommentInput {
+  text: string;
+  postId: number;
 }
 
 export interface FollowInput {

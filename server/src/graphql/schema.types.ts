@@ -18,17 +18,12 @@ export interface Query {
   surveys: Array<Survey>
   survey?: Maybe<Survey>
   posts: Array<Post>
-  comments: Array<Comment>
   following: Array<User>
   followers: Array<User>
 }
 
 export interface QuerySurveyArgs {
   surveyId: Scalars['Int']
-}
-
-export interface QueryCommentsArgs {
-  postId: Scalars['Int']
 }
 
 export interface QueryFollowingArgs {
@@ -318,12 +313,6 @@ export type QueryResolvers<
     RequireFields<QuerySurveyArgs, 'surveyId'>
   >
   posts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType>
-  comments?: Resolver<
-    Array<ResolversTypes['Comment']>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryCommentsArgs, 'postId'>
-  >
   following?: Resolver<
     Array<ResolversTypes['User']>,
     ParentType,
