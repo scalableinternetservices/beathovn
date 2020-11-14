@@ -32,8 +32,6 @@ export const graphqlRoot: Resolvers<Context> = {
     survey: async (_, { surveyId }) => (await Survey.findOne({ where: { id: surveyId } })) || null,
     surveys: () => Survey.find(),
     posts: () => Post.find({ relations: ['comments', 'comments.user'] }),
-    // comments: (_, { postId }) => return Following.find({ where: { followee: userId }, relations: ['follower'] }).then(rows =>
-    //     rows.map(row => row.follower)
     followers: (_, { userId }) => {
       return Following.find({ where: { followee: userId }, relations: ['follower'] }).then(rows =>
         rows.map(row => row.follower)
