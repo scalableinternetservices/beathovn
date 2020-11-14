@@ -216,6 +216,23 @@ export interface FetchSurveyVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: FollowUser
+// ====================================================
+
+export interface FollowUser {
+  followUser: boolean | null;
+}
+
+export interface FollowUserVariables {
+  input: FollowInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreatePost
 // ====================================================
 
@@ -395,6 +412,11 @@ export interface SurveyQuestion {
 export enum UserType {
   ADMIN = "ADMIN",
   USER = "USER",
+}
+
+export interface FollowInput {
+  followerId: number;
+  followeeId: number;
 }
 
 export interface PostInput {
