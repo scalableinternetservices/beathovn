@@ -34,16 +34,16 @@ const fetchFollowersQuery = gql`
   ${fragmentUser}
 `
 
-export function fetchFollowers($userId: number) {
-  return getApolloClient().mutate<FetchFollowers, FetchFollowersVariables>({
-    mutation: fetchFollowersQuery,
-    variables: { userId: $userId },
+export function fetchFollowers(userId: number) {
+  return getApolloClient().query<FetchFollowers, FetchFollowersVariables>({
+    query: fetchFollowersQuery,
+    variables: { userId },
   })
 }
 
-export function fetchFollowing($userId: number) {
-  return getApolloClient().mutate<FetchFollowing, FetchFollowingVariables>({
-    mutation: fetchFollowingQuery,
-    variables: { userId: $userId },
+export function fetchFollowing(userId: number) {
+  return getApolloClient().query<FetchFollowing, FetchFollowingVariables>({
+    query: fetchFollowingQuery,
+    variables: { userId },
   })
 }
