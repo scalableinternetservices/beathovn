@@ -169,20 +169,9 @@ export interface FetchSurveyVariables {
 // GraphQL mutation operation: CreatePost
 // ====================================================
 
-export interface CreatePost_createPost_user {
-  __typename: "User";
-  id: number;
-  name: string;
-  email: string;
-  userType: UserType;
-}
-
 export interface CreatePost_createPost {
   __typename: "Post";
   id: number;
-  musicLink: string;
-  commentary: string | null;
-  user: CreatePost_createPost_user | null;
 }
 
 export interface CreatePost {
