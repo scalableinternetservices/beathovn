@@ -9,11 +9,24 @@ export const fragmentUser = gql`
   }
 `
 
+export const fragmentComment = gql`
+  fragment Comment on Comment {
+    id
+    text
+    user {
+      ...User
+    }
+  }
+`
+
 export const fragmentPost = gql`
   fragment Post on Post {
     id
     musicLink
     commentary
+    comments {
+      ...Comment
+    }
     user {
       ...User
     }
@@ -28,4 +41,5 @@ export const fetchPosts = gql`
   }
   ${fragmentUser}
   ${fragmentPost}
+  ${fragmentComment}
 `

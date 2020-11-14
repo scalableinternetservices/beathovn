@@ -23,6 +23,8 @@ type Query {
 
   posts: [Post!]!
 
+  comments (postId: Int!): [Comment!]!
+
   # Who is this user following
   following (userId: Int!): [User!]!
   # Who follows this user
