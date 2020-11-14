@@ -33,14 +33,14 @@ export const graphqlRoot: Resolvers<Context> = {
     surveys: () => Survey.find(),
     posts: () => Post.find(),
     followers: (_, { userId }) => {
-      return Following.find({ where: { followee: userId } }).then(followerRecords => {
-        return followerRecords.map(fr => fr.follower)
-      })
+      return Following.find({ where: { followee: userId }, relations: ['follower'] }).then(rows =>
+        rows.map(row => row.follower)
+      )
     },
     following: (_, { userId }) => {
-      return Following.find({ where: { follower: userId } }).then(followerRecords => {
-        return followerRecords.map(fr => fr.followee)
-      })
+      return Following.find({ where: { follower: userId }, relations: ['followee'] }).then(rows =>
+        rows.map(row => row.followee)
+      )
     },
   },
   Mutation: {
@@ -99,7 +99,7 @@ export const graphqlRoot: Resolvers<Context> = {
       await comment.save()
 
       // Add comment to post
-      if (!post.comments){
+      if (!post.comments) {
         post.comments = []
       }
       post.comments.push(comment)

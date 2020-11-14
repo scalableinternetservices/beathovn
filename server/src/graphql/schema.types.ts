@@ -83,6 +83,7 @@ export interface User {
   userType: UserType
   email: Scalars['String']
   name: Scalars['String']
+  likes: Array<Like>
   comments: Array<Comment>
   followers: Array<Following>
   following: Array<Following>
@@ -384,6 +385,7 @@ export type UserResolvers<
   userType?: Resolver<ResolversTypes['UserType'], ParentType, ContextType>
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  likes?: Resolver<Array<ResolversTypes['Like']>, ParentType, ContextType>
   comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>
   followers?: Resolver<Array<ResolversTypes['Following']>, ParentType, ContextType>
   following?: Resolver<Array<ResolversTypes['Following']>, ParentType, ContextType>
