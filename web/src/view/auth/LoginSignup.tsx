@@ -8,15 +8,35 @@ import { handleError } from '../toast/error'
 import { toastErr } from '../toast/toast'
 import { UserContext } from './user'
 
-export function Login() {
+export function LoginSignup() {
   const [email, setEmail] = useState('')
-  // const [password, setPassword] = useState('')
-  const [err, setError] = useState({ email: false, password: false })
+  const [err, setError] = useState({ email: false })
   const { user } = useContext(UserContext)
 
   // reset error when email/password change
   useEffect(() => setError({ ...err, email: !validateEmail(email) }), [email])
-  // useEffect(() => setError({ ...err, password: false }), [password])
+
+  function signup() {
+    if (!validate(email, setError)) {
+      toastErr('invalid email/password')
+      return
+    }
+
+    fetch('/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    })
+      .then(res => {
+        check(res.ok, 'response status ' + res.status)
+        return res.text()
+      })
+      .then(() => window.location.reload())
+      .catch(err => {
+        toastErr(err.toString())
+        setError({ email: true })
+      })
+  }
 
   function login() {
     if (!validate(email, setError)) {
@@ -36,7 +56,7 @@ export function Login() {
       .then(() => window.location.reload())
       .catch(err => {
         toastErr(err.toString())
-        setError({ email: true, password: true })
+        setError({ email: true })
       })
   }
 
@@ -50,15 +70,10 @@ export function Login() {
         <label className="db fw4 lh-copy f6" htmlFor="email">
           Email address
         </label>
-        <Input $hasError={err.email} $onChange={setEmail} $onSubmit={login} name="email" type="email" />
+        <Input $hasError={err.email} $onChange={setEmail} $onSubmit={signup} name="email" type="email" />
       </div>
-      {/* <div className="mt3">
-        <label className="db fw4 lh-copy f6" htmlFor="password">
-          Password
-        </label>
-        <Input $hasError={err.password} $onChange={setPassword} $onSubmit={login} name="password" type="password" />
-      </div> */}
       <div className="mt3">
+        <Button onClick={signup}>Sign Up</Button>
         <Button onClick={login}>Login</Button>
       </div>
     </>
@@ -91,14 +106,9 @@ function validateEmail(email: string) {
   return re.test(String(email).toLowerCase())
 }
 
-function validate(
-  email: string,
-  setError: React.Dispatch<React.SetStateAction<{ email: boolean; password: boolean }>>
-) {
-  const password = 'TODO: remove'
+function validate(email: string, setError: React.Dispatch<React.SetStateAction<{ email: boolean }>>) {
   const validEmail = validateEmail(email)
-  const validPassword = Boolean(password)
-  console.log('valid', validEmail, validPassword)
-  setError({ email: !validEmail, password: !validPassword })
-  return validEmail && validPassword
+  console.log('valid', validEmail)
+  setError({ email: !validEmail })
+  return validEmail
 }

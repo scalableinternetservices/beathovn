@@ -6,10 +6,10 @@ import { useMediaQuery } from 'react-responsive'
 import { breakpoints } from '../../style/breakpoints'
 import { MenuIcon } from '../../style/icons'
 import { style } from '../../style/styled'
+import { LoginSignup } from '../auth/LoginSignup'
 import { addToastListener, removeToastListener, Toast, ToastType } from '../toast/toast'
 import { link } from './Link'
 import { getPath, Route } from './route'
-
 const title = {
   name: 'Beathovn',
   path: getPath(Route.HOME),
@@ -76,6 +76,7 @@ export function NavBar() {
           {isSmall && <NavMenu show={showMenu} onClick={() => setShowMenu(!showMenu)} />}
         </Nav>
         {/* <SubNav /> */}
+        <LoginSignup />
       </div>
       {toast && <ToastContainer $isError={toast.type === ToastType.ERROR}>{toast.message}</ToastContainer>}
     </>
