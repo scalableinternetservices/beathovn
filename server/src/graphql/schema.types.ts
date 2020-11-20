@@ -149,6 +149,7 @@ export interface Post {
   commentary?: Maybe<Scalars['String']>
   comments: Array<Comment>
   likes: Array<Like>
+  likecount: Scalars['Int']
   user?: Maybe<User>
 }
 
@@ -467,6 +468,7 @@ export type PostResolvers<
   commentary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>
   likes?: Resolver<Array<ResolversTypes['Like']>, ParentType, ContextType>
+  likecount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }

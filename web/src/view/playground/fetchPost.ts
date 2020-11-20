@@ -24,6 +24,7 @@ export const fragmentPost = gql`
     id
     musicLink
     commentary
+    likecount
     comments {
       ...Comment
     }

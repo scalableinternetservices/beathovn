@@ -132,6 +132,7 @@ type Post {
   commentary: String
   comments: [Comment!]!
   likes: [Like!]!
+  likecount: Int!
   user: User
 }
 

@@ -105,6 +105,7 @@ export interface FetchPosts_posts {
   id: number;
   musicLink: string;
   commentary: string | null;
+  likecount: number;
   comments: FetchPosts_posts_comments[];
   user: FetchPosts_posts_user | null;
 }
@@ -421,6 +422,7 @@ export interface Post {
   id: number;
   musicLink: string;
   commentary: string | null;
+  likecount: number;
   comments: Post_comments[];
   user: Post_user | null;
 }
