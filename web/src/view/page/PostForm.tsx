@@ -10,38 +10,40 @@ const divContainerStyle: CSS.Properties = {
   backgroundColor: 'rgba(255, 255, 255, 0.85)',
   boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
   padding: '20px',
-  margin: '10px'
+  margin: '10px',
+}
+
+const sideBySide: CSS.Properties = {
+  margin: '10px 10px 10px 0px',
 }
 
 export function PostForm() {
   const [commentary, setCommentary] = useState('')
   const [musicLink, setMusicLink] = useState('')
 
-
   function submitForm(musicLink: string, commentary: string) {
     createPost({ musicLink: musicLink, commentary: commentary }).catch(handleError)
-    console.log("We have submitted the form!")
+    console.log('We have submitted the form!')
   }
 
   return (
     <div style={divContainerStyle}>
+      <p>Whatcha been listening to?</p>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="email">
           Music Link
         </label>
         <Input $onChange={setMusicLink} name="email" type="email" />
       </div>
-      <div className="mt3">
-        <label className="db fw4 lh-copy f6">
-          Commentary
-        </label>
+      <div className="mt3" style={sideBySide}>
+        <label className="db fw4 lh-copy f6">Commentary</label>
         <Input $onChange={setCommentary} />
       </div>
       <div className="mt3">
-        <Button onClick={() => submitForm(musicLink, commentary)}>Submit Post</Button>
+        <Button onClick={() => submitForm(musicLink, commentary)} style={sideBySide}>
+          Submit Post
+        </Button>
       </div>
     </div>
   )
 }
-
-

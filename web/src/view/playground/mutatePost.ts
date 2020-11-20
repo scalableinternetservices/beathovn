@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 import { getApolloClient } from '../../graphql/apolloClient'
-import { CreatePost, PostInput } from '../../graphql/query.gen'
+import { CreatePost, CreatePostVariables, PostInput } from '../../graphql/query.gen'
 
 const createPostMutation = gql`
   mutation CreatePost($input: PostInput!) {
@@ -11,7 +11,7 @@ const createPostMutation = gql`
 `
 
 export function createPost(input: PostInput) {
-  return getApolloClient().mutate<CreatePost>({
+  return getApolloClient().mutate<CreatePost, CreatePostVariables>({
     mutation: createPostMutation,
     variables: { input },
   })
