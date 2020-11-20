@@ -77,6 +77,20 @@ export interface FetchFollowersVariables {
 // GraphQL query operation: FetchPosts
 // ====================================================
 
+export interface FetchPosts_posts_likes_user {
+  __typename: "User";
+  id: number;
+  name: string;
+  email: string;
+  userType: UserType;
+}
+
+export interface FetchPosts_posts_likes {
+  __typename: "Like";
+  id: number;
+  user: FetchPosts_posts_likes_user;
+}
+
 export interface FetchPosts_posts_comments_user {
   __typename: "User";
   id: number;
@@ -105,6 +119,7 @@ export interface FetchPosts_posts {
   id: number;
   musicLink: string;
   commentary: string | null;
+  likes: FetchPosts_posts_likes[];
   likecount: number;
   comments: FetchPosts_posts_comments[];
   user: FetchPosts_posts_user | null;
@@ -272,6 +287,23 @@ export interface FollowUserVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: LikePost
+// ====================================================
+
+export interface LikePost {
+  likePost: boolean | null;
+}
+
+export interface LikePostVariables {
+  input: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreatePost
 // ====================================================
 
@@ -391,8 +423,45 @@ export interface Comment {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: Like
+// ====================================================
+
+export interface Like_user {
+  __typename: "User";
+  id: number;
+  name: string;
+  email: string;
+  userType: UserType;
+}
+
+export interface Like {
+  __typename: "Like";
+  id: number;
+  user: Like_user;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: Post
 // ====================================================
+
+export interface Post_likes_user {
+  __typename: "User";
+  id: number;
+  name: string;
+  email: string;
+  userType: UserType;
+}
+
+export interface Post_likes {
+  __typename: "Like";
+  id: number;
+  user: Post_likes_user;
+}
 
 export interface Post_comments_user {
   __typename: "User";
@@ -422,6 +491,7 @@ export interface Post {
   id: number;
   musicLink: string;
   commentary: string | null;
+  likes: Post_likes[];
   likecount: number;
   comments: Post_comments[];
   user: Post_user | null;
