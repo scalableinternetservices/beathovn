@@ -21,7 +21,7 @@ type Query {
   surveys: [Survey!]!
   survey (surveyId: Int!): Survey
 
-  posts: [Post!]!
+  posts: [PostWithLikeCount!]!
 
   # Who is this user following
   following (userId: Int!): [User!]!
@@ -132,6 +132,16 @@ type Post {
   commentary: String
   comments: [Comment!]!
   likes: [Like!]!
+  user: User
+}
+
+type PostWithLikeCount {
+  id: Int!
+  # timeCreated: Int!
+  musicLink: String!
+  commentary: String
+  comments: [Comment!]!
+  likes: Int!
   user: User
 }
 
