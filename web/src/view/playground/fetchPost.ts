@@ -19,11 +19,12 @@ export const fragmentComment = gql`
   }
 `
 
-export const fragmentPost = gql`
-  fragment Post on Post {
+export const fragmentPostWithLikeCount = gql`
+  fragment PostWithLikeCount on PostWithLikeCount {
     id
     musicLink
     commentary
+    likes
     comments {
       ...Comment
     }
@@ -36,10 +37,10 @@ export const fragmentPost = gql`
 export const fetchPosts = gql`
   query FetchPosts {
     posts {
-      ...Post
+      ...PostWithLikeCount
     }
   }
   ${fragmentUser}
-  ${fragmentPost}
+  ${fragmentPostWithLikeCount}
   ${fragmentComment}
 `

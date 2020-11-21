@@ -101,10 +101,11 @@ export interface FetchPosts_posts_user {
 }
 
 export interface FetchPosts_posts {
-  __typename: "Post";
+  __typename: "PostWithLikeCount";
   id: number;
   musicLink: string;
   commentary: string | null;
+  likes: number;
   comments: FetchPosts_posts_comments[];
   user: FetchPosts_posts_user | null;
 }
@@ -390,10 +391,10 @@ export interface Comment {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: Post
+// GraphQL fragment: PostWithLikeCount
 // ====================================================
 
-export interface Post_comments_user {
+export interface PostWithLikeCount_comments_user {
   __typename: "User";
   id: number;
   name: string;
@@ -401,14 +402,14 @@ export interface Post_comments_user {
   userType: UserType;
 }
 
-export interface Post_comments {
+export interface PostWithLikeCount_comments {
   __typename: "Comment";
   id: number;
   text: string;
-  user: Post_comments_user;
+  user: PostWithLikeCount_comments_user;
 }
 
-export interface Post_user {
+export interface PostWithLikeCount_user {
   __typename: "User";
   id: number;
   name: string;
@@ -416,13 +417,14 @@ export interface Post_user {
   userType: UserType;
 }
 
-export interface Post {
-  __typename: "Post";
+export interface PostWithLikeCount {
+  __typename: "PostWithLikeCount";
   id: number;
   musicLink: string;
   commentary: string | null;
-  comments: Post_comments[];
-  user: Post_user | null;
+  likes: number;
+  comments: PostWithLikeCount_comments[];
+  user: PostWithLikeCount_user | null;
 }
 
 /* tslint:disable */
