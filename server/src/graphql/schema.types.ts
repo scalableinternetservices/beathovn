@@ -148,7 +148,6 @@ export interface Post {
   musicLink: Scalars['String']
   commentary?: Maybe<Scalars['String']>
   comments: Array<Comment>
-  likes: Array<Like>
   user?: Maybe<User>
 }
 
@@ -478,7 +477,6 @@ export type PostResolvers<
   musicLink?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   commentary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>
-  likes?: Resolver<Array<ResolversTypes['Like']>, ParentType, ContextType>
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }

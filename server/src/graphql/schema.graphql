@@ -131,7 +131,6 @@ type Post {
   musicLink: String!
   commentary: String
   comments: [Comment!]!
-  likes: [Like!]!
   user: User
 }
 
