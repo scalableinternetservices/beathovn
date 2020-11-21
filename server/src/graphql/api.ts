@@ -32,7 +32,7 @@ export const graphqlRoot: Resolvers<Context> = {
     survey: async (_, { surveyId }) => (await Survey.findOne({ where: { id: surveyId } })) || null,
     surveys: () => Survey.find(),
     posts: () =>
-      Post.find({ relations: ['user', 'comments', 'comments.user'] }).then(rows =>
+      Post.find({ relations: ['user', 'likes', 'comments', 'comments.user'] }).then(rows =>
         rows.map(row => {
           return {
             ...row,
@@ -89,9 +89,9 @@ export const graphqlRoot: Resolvers<Context> = {
     },
     createComment: async (_, { input }, ctx) => {
       const { text, postId } = input
-      const post = check(await Post.findOne({ where: { id: postId } }))
+      const post = check(await Post.findOne({ where: { id: postId }, relations: ['comments'] }))
       // if (!post) {
-      //   return false
+      //   return {}
       // }
 
       // Create, populate, and persist new Comment data
@@ -100,16 +100,10 @@ export const graphqlRoot: Resolvers<Context> = {
       comment.post = post
       if (ctx.user) {
         comment.user = ctx.user
-        if (!comment.user.comments) {
-          comment.user.comments = []
-        }
       }
       await comment.save()
 
       // Add comment to post
-      if (!post.comments) {
-        post.comments = []
-      }
       post.comments.push(comment)
       await post.save()
 
@@ -120,7 +114,7 @@ export const graphqlRoot: Resolvers<Context> = {
       return comment
     },
     likePost: async (_, { postId }, ctx) => {
-      const post = check(await Post.findOne({ where: { id: postId } }))
+      const post = check(await Post.findOne({ where: { id: postId }, relations: ['likes'] }))
       if (!post) {
         return false
       }
@@ -130,16 +124,10 @@ export const graphqlRoot: Resolvers<Context> = {
       like.post = post
       if (ctx.user) {
         like.user = ctx.user
-        if (!like.user.comments) {
-          like.user.comments = []
-        }
       }
       await like.save()
 
       // Add like to post
-      if (!post.likes) {
-        post.likes = []
-      }
       post.likes.push(like)
       await post.save()
 
