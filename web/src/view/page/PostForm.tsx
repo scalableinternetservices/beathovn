@@ -24,6 +24,8 @@ export function PostForm() {
   function submitForm(musicLink: string, commentary: string) {
     createPost({ musicLink: musicLink, commentary: commentary }).catch(handleError)
     console.log('We have submitted the form!')
+    setCommentary('')
+    setMusicLink('')
   }
 
   return (
@@ -33,11 +35,11 @@ export function PostForm() {
         <label className="db fw4 lh-copy f6" htmlFor="email">
           Music Link
         </label>
-        <Input $onChange={setMusicLink} name="email" type="email" />
+        <Input $onChange={setMusicLink} name="email" type="email" value={musicLink} />
       </div>
       <div className="mt3" style={sideBySide}>
         <label className="db fw4 lh-copy f6">Commentary</label>
-        <Input $onChange={setCommentary} />
+        <Input $onChange={setCommentary} value={commentary} />
       </div>
       <div className="mt3">
         <Button onClick={() => submitForm(musicLink, commentary)} style={sideBySide}>
