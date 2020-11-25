@@ -57,14 +57,14 @@ server.express.post(
     console.log('POST /auth/signup')
     const { email } = req.body
 
-    if(!!(await User.findOne({ where: { email }}))) {
+    if (!!(await User.findOne({ where: { email } }))) {
       res.status(403).send('Email already in use.')
       return
     }
 
     const user = new User()
     user.email = email
-    user.name = email.split("@")[0]
+    user.name = email.split('@')[0]
 
     await user.save()
 
@@ -93,7 +93,7 @@ server.express.post(
 
     const user = await User.findOne({ where: { email } })
     if (!user) {
-      if ((password || !password)) {
+      if (password || !password) {
         res.status(400).send('User does not exist.')
       }
       return
@@ -248,7 +248,10 @@ server.express.post(
   asyncRoute(async (req, res, next) => {
     const authToken = req.cookies.authToken || req.header('x-authtoken')
     if (authToken) {
-      const session = await Session.findOne({ where: { authToken }, relations: ['user'] })
+      const session = await Session.findOne({
+        where: { authToken },
+        relations: ['user', 'user.comments', 'user.likes', 'user.posts'],
+      })
       if (session) {
         const reqAny = req as any
         reqAny.user = session.user

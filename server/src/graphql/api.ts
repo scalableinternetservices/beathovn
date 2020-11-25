@@ -84,6 +84,11 @@ export const graphqlRoot: Resolvers<Context> = {
         post.user = ctx.user
       }
       await post.save()
+
+      if (post.user) {
+        post.user.posts.push(post)
+        await post.user.save()
+      }
       // ctx.pubsub.publish('CREATE_POST', post)
       return post
     },
@@ -103,13 +108,13 @@ export const graphqlRoot: Resolvers<Context> = {
       }
       await comment.save()
 
-      // Add comment to post
-      post.comments.push(comment)
-      await post.save()
-
       // Add comment to user
       comment.user?.comments.push(comment)
       await comment.user?.save()
+
+      // Add comment to post
+      post.comments.push(comment)
+      await post.save()
 
       return comment
     },
