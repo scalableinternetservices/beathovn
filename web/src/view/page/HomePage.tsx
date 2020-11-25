@@ -35,7 +35,7 @@ export function PostsPage(props: PostsPageProps) {
       <PostForm />
       {data.posts.map((p, i) => (
         <div key={i}>
-          <Post musicLink={p.musicLink} commentary={p.commentary} />
+          <Post postData={p}/>
         </div>
       ))}
     </Page>
