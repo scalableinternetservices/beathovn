@@ -73,27 +73,57 @@ export function getApolloClient() {
         fields: {
           posts: {
             keyArgs: false,
-            merge(existing: FetchPosts_posts, incoming: FetchPosts_posts) : FetchPosts_posts {
+            merge(existing: FetchPosts_posts, incoming: FetchPosts_posts): FetchPosts_posts {
               if (!existing) {
                 return incoming
               }
 
               let mergedPosts: FetchPosts_posts_posts[] = []
-              if (existing.posts)
-                mergedPosts = mergedPosts.concat(existing.posts)
+              if (existing.posts) mergedPosts = mergedPosts.concat(existing.posts)
               if (incoming.posts) {
                 mergedPosts = mergedPosts.concat(incoming.posts)
               }
 
               return {
                 ...incoming,
-                posts: mergedPosts
+                posts: mergedPosts,
+              }
+            },
+          },
+        },
+      },
+      PostWithLikeCount: {
+        fields: {
+          commentFeed: {
+            keyArgs: false,
+            merge: (existing , incoming) => {
+              if (!existing) {
+                return incoming
+              }
+
+              let mergedComments: any[] = []
+              let seenIds: {[key: string]: boolean} = {}
+              if (existing.comments) {
+                mergedComments = mergedComments.concat(existing.comments)
+                existing.comments.map((cmnt:any) => {
+                  if (cmnt?.__ref) {
+                    seenIds[cmnt.__ref] = true
+                  }
+                })
+              }
+              if (incoming.comments) {
+                mergedComments = mergedComments.concat(incoming.comments.filter((cmnt:any) => cmnt?.__ref && !seenIds[cmnt.__ref]))
+              }
+
+              return {
+                ...incoming,
+                comments: mergedComments
               }
             }
           }
         }
       }
-    }
+    },
   })
   if (appCtx.apolloState) {
     cache.restore(appCtx.apolloState)
