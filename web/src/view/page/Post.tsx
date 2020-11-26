@@ -1,7 +1,12 @@
 import CSS from 'csstype'
 import * as React from 'react'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Comment, PostWithLikeCount } from '../../graphql/query.gen'
+import { Button } from '../../style/button'
+import { Input } from '../../style/input'
+import { UserContext } from '../auth/user'
+import { createComment } from '../playground/mutateComment'
+import { likePost } from '../playground/mutateLike'
 
 const containerStyle: CSS.Properties = {
   padding: '4px 32px',
@@ -26,13 +31,17 @@ const commentButtonStyle: CSS.Properties = {
   margin: '10px',
 }
 
-function likeButtonHandler() {
-  console.log('The like button was clicked!')
-}
-
 export function Post(props: { postData: PostWithLikeCount }) {
   const [displayComments, setDisplayComments] = useState(false)
-  console.log(props.postData.comments);
+  const { user } = useContext(UserContext)
+  // console.log(props.postData.comments);
+
+  const likeButtonHandler = () => {
+    console.log('The like button was clicked!')
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    likePost(props.postData.id)
+  }
+
   return (
     <div className="card" style={cardStyle}>
       <div className="container" style={containerStyle}>
@@ -41,13 +50,16 @@ export function Post(props: { postData: PostWithLikeCount }) {
         </a>
         <h3>{props.postData.commentary}</h3>
         <h3>likes: {props.postData.likes} </h3>
-        <button style={likeButtonStyle} type="button" onClick={likeButtonHandler}>
-          Like
-        </button>
-        <button style={commentButtonStyle} type="button" onClick={() => setDisplayComments(!displayComments)}>
+        {user && (
+          <Button style={likeButtonStyle} type="button" onClick={likeButtonHandler}>
+            👍
+          </Button>
+        )}
+        <Button style={commentButtonStyle} type="button" onClick={() => setDisplayComments(!displayComments)}>
           Show Comments
-        </button>
-        {displayComments && <Comments commentData={props.postData.comments}/>}
+        </Button>
+        {displayComments && <Comments commentData={props.postData.comments} />}
+        {user && <CommentInput postId={props.postData.id} />}
       </div>
     </div>
   )
@@ -58,8 +70,28 @@ function Comments(props: { commentData: Comment[] }) {
     <div>
       <h3>WE ARE DISPLAYING THE COMMENTS</h3>
       {props.commentData.map((cmnt, i) => (
-        <h2 key={i}>{cmnt.user?.name || 'anon'}: {cmnt.text}</h2>
+        <h2 key={i}>
+          {cmnt.user?.name || 'anon'}: {cmnt.text}
+        </h2>
       ))}
+    </div>
+  )
+}
+
+function CommentInput(props: { postId: number }) {
+  const [text, setText] = useState('')
+
+  const createCommentHandler = (text: string) => {
+    console.log('commenting...')
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    createComment({ text, postId: props.postId })
+    setText('')
+  }
+
+  return (
+    <div>
+      <Input $onChange={setText} name="text" type="text" placeholder="thoughts?" value={text} />
+      <Button onClick={() => createCommentHandler(text)}>Submit</Button>
     </div>
   )
 }

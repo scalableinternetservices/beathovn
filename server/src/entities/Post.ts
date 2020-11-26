@@ -4,8 +4,8 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-
-  ManyToOne, OneToMany,
+  ManyToOne,
+  OneToMany,
 
   // eslint-disable-next-line prettier/prettier
   PrimaryGeneratedColumn
@@ -28,15 +28,15 @@ export class Post extends BaseEntity {
   @Column()
   commentary: string
 
-  @OneToMany(type => Comment, comment => comment.user)
+  @OneToMany(type => Comment, comment => comment.post)
   @JoinColumn()
   comments: Comment[]
 
-  @OneToMany(type => Like, like => like.user)
+  @OneToMany(type => Like, like => like.post)
   @JoinColumn()
   likes: Like[]
 
-  @ManyToOne(() => User)
+  @ManyToOne(type => User, user => user.posts)
   @JoinColumn()
   user: User
   // Asociated with User, many to one relationsihp

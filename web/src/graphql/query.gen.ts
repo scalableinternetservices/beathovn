@@ -272,6 +272,23 @@ export interface FollowUserVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: LikePost
+// ====================================================
+
+export interface LikePost {
+  likePost: boolean | null;
+}
+
+export interface LikePostVariables {
+  postId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreatePost
 // ====================================================
 

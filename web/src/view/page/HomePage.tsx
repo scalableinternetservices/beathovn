@@ -1,7 +1,9 @@
 import { useQuery } from '@apollo/client'
 import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
+import { useContext } from 'react'
 import { FetchPosts } from '../../graphql/query.gen'
+import { UserContext } from '../auth/user'
 import { AppRouteParams } from '../nav/route'
 import { fetchPosts } from '../playground/fetchPost'
 import { Page } from './Page'
@@ -12,6 +14,7 @@ import { PostForm } from './PostForm'
 interface PostsPageProps extends RouteComponentProps, AppRouteParams {}
 
 export function PostsPage(props: PostsPageProps) {
+  const { user } = useContext(UserContext)
   //const [posts, setPosts] = useState([])
   const { loading, data } = useQuery<FetchPosts>(fetchPosts)
 
@@ -21,21 +24,21 @@ export function PostsPage(props: PostsPageProps) {
   if (!data || data.posts.length === 0) {
     return (
       <Page>
-        <PostForm />
+        {user && <PostForm />}
         <div>no posts</div>
       </Page>
     )
   }
-  console.log('Posts length is : ' + data.posts.length)
+  // console.log('Posts length is : ' + data.posts.length)
   // for (let i = 0; i < data.posts.length; i++) {
   //   console.log('updated output', data.posts[i])
   // }
   return (
     <Page>
-      <PostForm />
+      {user && <PostForm />}
       {data.posts.map((p, i) => (
         <div key={i}>
-          <Post postData={p}/>
+          <Post postData={p} />
         </div>
       ))}
     </Page>
