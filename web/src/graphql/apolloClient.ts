@@ -5,6 +5,7 @@ import { HttpLink } from '@apollo/client/link/http'
 import { WebSocketLink } from '@apollo/client/link/ws'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { appContext } from '../../../common/src/context'
+import { FetchPosts_posts, FetchPosts_posts_posts } from './query.gen'
 
 let clientSingleton: ApolloClient<NormalizedCacheObject> | undefined = undefined
 
@@ -65,7 +66,35 @@ export function getApolloClient() {
 
   const link = authLink.concat(errorLink).concat(splitLink)
 
-  const cache = new InMemoryCache()
+  const cache = new InMemoryCache({
+    //TODO: build merge shit for posts
+    typePolicies: {
+      Query: {
+        fields: {
+          posts: {
+            keyArgs: false,
+            merge(existing: FetchPosts_posts, incoming: FetchPosts_posts) : FetchPosts_posts {
+              if (!existing) {
+                return incoming
+              }
+
+              let mergedPosts: FetchPosts_posts_posts[] = []
+              if (existing.posts)
+                mergedPosts = mergedPosts.concat(existing.posts)
+              if (incoming.posts) {
+                mergedPosts = mergedPosts.concat(incoming.posts)
+              }
+
+              return {
+                ...incoming,
+                posts: mergedPosts
+              }
+            }
+          }
+        }
+      }
+    }
+  })
   if (appCtx.apolloState) {
     cache.restore(appCtx.apolloState)
   }

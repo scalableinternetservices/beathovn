@@ -1,8 +1,7 @@
-import { useQuery } from '@apollo/client'
 import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
-import { useContext } from 'react'
-import { FetchPosts } from '../../graphql/query.gen'
+import { useContext, useState } from 'react'
+import { Button } from '../../style/button'
 import { UserContext } from '../auth/user'
 import { AppRouteParams } from '../nav/route'
 import { fetchPosts } from '../playground/fetchPost'
@@ -16,12 +15,44 @@ interface PostsPageProps extends RouteComponentProps, AppRouteParams {}
 export function PostsPage(props: PostsPageProps) {
   const { user } = useContext(UserContext)
   //const [posts, setPosts] = useState([])
-  const { loading, data } = useQuery<FetchPosts>(fetchPosts)
+  const { loading, data, fetchMore } = fetchPosts()
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  const fetchMorePosts = async () => {
+    setIsLoadingMore(true)
+    await fetchMore({
+      variables: {
+        cursor: data?.posts?.cursor
+      },
+      // updateQuery: (prev, { fetchMoreResult }) => {
+      //   if (!fetchMoreResult) {
+      //     return prev
+      //   }
+      //   let mergedPosts: FetchPosts_posts_posts[] = []
+      //   if (prev.posts?.posts) {
+      //     mergedPosts = mergedPosts.concat(prev.posts?.posts)
+      //   }
+      //   if (fetchMoreResult.posts?.posts) {
+      //     mergedPosts = mergedPosts.concat(fetchMoreResult.posts?.posts)
+      //   }
+
+      //   return Object.assign({},
+      //     fetchMoreResult,
+      //     {
+      //       posts: {
+      //         posts: mergedPosts
+      //       }
+      //     }
+      //   )
+      // }
+    })
+    setIsLoadingMore(false)
+  }
 
   if (loading) {
     return <div>Loading....</div>
   }
-  if (!data || data.posts.length === 0) {
+  if (!data || data.posts?.posts.length === 0) {
     return (
       <Page>
         {user && <PostForm />}
@@ -36,14 +67,24 @@ export function PostsPage(props: PostsPageProps) {
   return (
     <Page>
       {user && <PostForm />}
-      {data.posts.map((p, i) => (
+      {data.posts?.posts.map((p, i) => (
         <div key={i}>
           <Post postData={p} />
         </div>
       ))}
+      {data.posts && data.posts.hasMore && (
+        isLoadingMore
+          ? <div> Loading... </div>
+          : <Button
+              onClick = {fetchMorePosts}>
+              Load More
+            </Button>
+      )}
     </Page>
   )
 }
+
+
 /*
 export function HomePage(props: HomePageProps) {
   return (
