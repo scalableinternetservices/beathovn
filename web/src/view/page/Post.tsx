@@ -1,10 +1,11 @@
 import CSS from 'csstype'
 import * as React from 'react'
 import { useContext, useState } from 'react'
-import { Comment, PostWithLikeCount } from '../../graphql/query.gen'
+import { PostWithLikeCount } from '../../graphql/query.gen'
 import { Button } from '../../style/button'
 import { Input } from '../../style/input'
 import { UserContext } from '../auth/user'
+import { fetchPostComments } from '../playground/fetchPost'
 import { createComment } from '../playground/mutateComment'
 import { likePost } from '../playground/mutateLike'
 
@@ -34,12 +35,65 @@ const commentButtonStyle: CSS.Properties = {
 export function Post(props: { postData: PostWithLikeCount }) {
   const [displayComments, setDisplayComments] = useState(false)
   const { user } = useContext(UserContext)
+  const [loadingComments, setLoadingComments] = useState(false)
+  const [staleComments, setStaleComments] = useState(false)
   // console.log(props.postData.comments);
+
+  const { data: commentData, fetchMore } = fetchPostComments(props.postData.id)
+
+  const fetchMoreComments = async () => {
+    setLoadingComments(true)
+    await fetchMore({
+      variables: {
+        postId: props.postData.id,
+        cursor: commentData?.postDetails?.commentFeed?.cursor,
+      },
+    })
+    setStaleComments(false)
+    setLoadingComments(false)
+  }
 
   const likeButtonHandler = () => {
     console.log('The like button was clicked!')
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     likePost(props.postData.id)
+  }
+
+  const Comments = () => {
+    const comments = commentData?.postDetails?.commentFeed?.comments || []
+
+    return (
+      <div>
+        <h3>WE ARE DISPLAYING THE COMMENTS</h3>
+        {comments.map((cmnt, i) => (
+          cmnt && (<h2 key={i}>
+            {cmnt.user?.name || 'anon'}: {cmnt.text}
+          </h2>)
+        ))}
+        {comments &&
+          (commentData?.postDetails?.commentFeed?.hasMore || staleComments) &&
+          (loadingComments ? <div> Loading comments... </div> : <Button onClick={fetchMoreComments}>Load More</Button>)}
+      </div>
+    )
+  }
+
+  const CommentInput = (props: { postId: number }) => {
+    const [text, setText] = useState('')
+
+    const createCommentHandler = (text: string) => {
+      console.log('commenting...')
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      createComment({ text, postId: props.postId })
+      setText('')
+      setStaleComments(true)
+    }
+
+    return (
+      <div>
+        <Input $onChange={setText} name="text" type="text" placeholder="thoughts?" value={text} />
+        <Button onClick={() => createCommentHandler(text)}>Submit</Button>
+      </div>
+    )
   }
 
   return (
@@ -58,40 +112,9 @@ export function Post(props: { postData: PostWithLikeCount }) {
         <Button style={commentButtonStyle} type="button" onClick={() => setDisplayComments(!displayComments)}>
           Show Comments
         </Button>
-        {displayComments && <Comments commentData={props.postData.comments} />}
+        {displayComments && <Comments />}
         {user && <CommentInput postId={props.postData.id} />}
       </div>
-    </div>
-  )
-}
-
-function Comments(props: { commentData: Comment[] }) {
-  return (
-    <div>
-      <h3>WE ARE DISPLAYING THE COMMENTS</h3>
-      {props.commentData.map((cmnt, i) => (
-        <h2 key={i}>
-          {cmnt.user?.name || 'anon'}: {cmnt.text}
-        </h2>
-      ))}
-    </div>
-  )
-}
-
-function CommentInput(props: { postId: number }) {
-  const [text, setText] = useState('')
-
-  const createCommentHandler = (text: string) => {
-    console.log('commenting...')
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    createComment({ text, postId: props.postId })
-    setText('')
-  }
-
-  return (
-    <div>
-      <Input $onChange={setText} name="text" type="text" placeholder="thoughts?" value={text} />
-      <Button onClick={() => createCommentHandler(text)}>Submit</Button>
     </div>
   )
 }
