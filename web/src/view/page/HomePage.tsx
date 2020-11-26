@@ -16,35 +16,14 @@ export function PostsPage(props: PostsPageProps) {
   const { user } = useContext(UserContext)
   //const [posts, setPosts] = useState([])
   const { loading, data, fetchMore } = fetchPosts()
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
 
   const fetchMorePosts = async () => {
     setIsLoadingMore(true)
     await fetchMore({
       variables: {
-        cursor: data?.posts?.cursor
+        cursor: data?.posts?.cursor,
       },
-      // updateQuery: (prev, { fetchMoreResult }) => {
-      //   if (!fetchMoreResult) {
-      //     return prev
-      //   }
-      //   let mergedPosts: FetchPosts_posts_posts[] = []
-      //   if (prev.posts?.posts) {
-      //     mergedPosts = mergedPosts.concat(prev.posts?.posts)
-      //   }
-      //   if (fetchMoreResult.posts?.posts) {
-      //     mergedPosts = mergedPosts.concat(fetchMoreResult.posts?.posts)
-      //   }
-
-      //   return Object.assign({},
-      //     fetchMoreResult,
-      //     {
-      //       posts: {
-      //         posts: mergedPosts
-      //       }
-      //     }
-      //   )
-      // }
     })
     setIsLoadingMore(false)
   }
@@ -72,18 +51,12 @@ export function PostsPage(props: PostsPageProps) {
           <Post postData={p} />
         </div>
       ))}
-      {data.posts && data.posts.hasMore && (
-        isLoadingMore
-          ? <div> Loading... </div>
-          : <Button
-              onClick = {fetchMorePosts}>
-              Load More
-            </Button>
-      )}
+      {data.posts &&
+        data.posts.hasMore &&
+        (isLoadingMore ? <div> Loading... </div> : <Button onClick={fetchMorePosts}>Load More</Button>)}
     </Page>
   )
 }
-
 
 /*
 export function HomePage(props: HomePageProps) {
