@@ -77,21 +77,6 @@ export interface FetchFollowersVariables {
 // GraphQL query operation: FetchPosts
 // ====================================================
 
-export interface FetchPosts_posts_posts_comments_user {
-  __typename: "User";
-  id: number;
-  name: string;
-  email: string;
-  userType: UserType;
-}
-
-export interface FetchPosts_posts_posts_comments {
-  __typename: "Comment";
-  id: number;
-  text: string;
-  user: FetchPosts_posts_posts_comments_user;
-}
-
 export interface FetchPosts_posts_posts_user {
   __typename: "User";
   id: number;
@@ -106,7 +91,6 @@ export interface FetchPosts_posts_posts {
   musicLink: string;
   commentary: string | null;
   likes: number;
-  comments: FetchPosts_posts_posts_comments[];
   user: FetchPosts_posts_posts_user | null;
 }
 
@@ -134,29 +118,6 @@ export interface FetchPostsVariables {
 // GraphQL query operation: FetchPostDetails
 // ====================================================
 
-export interface FetchPostDetails_postDetails_comments_user {
-  __typename: "User";
-  id: number;
-  name: string;
-  email: string;
-  userType: UserType;
-}
-
-export interface FetchPostDetails_postDetails_comments {
-  __typename: "Comment";
-  id: number;
-  text: string;
-  user: FetchPostDetails_postDetails_comments_user;
-}
-
-export interface FetchPostDetails_postDetails_user {
-  __typename: "User";
-  id: number;
-  name: string;
-  email: string;
-  userType: UserType;
-}
-
 export interface FetchPostDetails_postDetails_commentFeed_comments_user {
   __typename: "User";
   id: number;
@@ -182,11 +143,6 @@ export interface FetchPostDetails_postDetails_commentFeed {
 export interface FetchPostDetails_postDetails {
   __typename: "PostWithLikeCount";
   id: number;
-  musicLink: string;
-  commentary: string | null;
-  likes: number;
-  comments: FetchPostDetails_postDetails_comments[];
-  user: FetchPostDetails_postDetails_user | null;
   commentFeed: FetchPostDetails_postDetails_commentFeed | null;
 }
 
@@ -496,21 +452,6 @@ export interface Comment {
 // GraphQL fragment: PostWithLikeCount
 // ====================================================
 
-export interface PostWithLikeCount_comments_user {
-  __typename: "User";
-  id: number;
-  name: string;
-  email: string;
-  userType: UserType;
-}
-
-export interface PostWithLikeCount_comments {
-  __typename: "Comment";
-  id: number;
-  text: string;
-  user: PostWithLikeCount_comments_user;
-}
-
 export interface PostWithLikeCount_user {
   __typename: "User";
   id: number;
@@ -525,7 +466,6 @@ export interface PostWithLikeCount {
   musicLink: string;
   commentary: string | null;
   likes: number;
-  comments: PostWithLikeCount_comments[];
   user: PostWithLikeCount_user | null;
 }
 
@@ -537,21 +477,6 @@ export interface PostWithLikeCount {
 // ====================================================
 // GraphQL fragment: PostFeed
 // ====================================================
-
-export interface PostFeed_posts_comments_user {
-  __typename: "User";
-  id: number;
-  name: string;
-  email: string;
-  userType: UserType;
-}
-
-export interface PostFeed_posts_comments {
-  __typename: "Comment";
-  id: number;
-  text: string;
-  user: PostFeed_posts_comments_user;
-}
 
 export interface PostFeed_posts_user {
   __typename: "User";
@@ -567,7 +492,6 @@ export interface PostFeed_posts {
   musicLink: string;
   commentary: string | null;
   likes: number;
-  comments: PostFeed_posts_comments[];
   user: PostFeed_posts_user | null;
 }
 

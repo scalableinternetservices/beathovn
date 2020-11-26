@@ -26,9 +26,6 @@ export const fragmentPostWithLikeCount = gql`
     musicLink
     commentary
     likes
-    comments {
-      ...Comment
-    }
     user {
       ...User
     }
@@ -53,14 +50,13 @@ export const fetchPostQuery = gql`
   }
   ${fragmentUser}
   ${fragmentPostWithLikeCount}
-  ${fragmentComment}
   ${fragmentPostFeed}
 `
 
-const fetchPostDetailsQuery = gql`
+const fetchPostCommentsQuery = gql`
   query FetchPostDetails($postId: Int!, $cursor: String) {
     postDetails(postId: $postId) {
-      ...PostWithLikeCount
+      id
       commentFeed(cursor: $cursor) {
         cursor
         hasMore
@@ -71,14 +67,13 @@ const fetchPostDetailsQuery = gql`
     }
   }
   ${fragmentUser}
-  ${fragmentPostWithLikeCount}
   ${fragmentComment}
 `
 
 export function fetchPosts($cursor?: string) {
-  return useQuery<FetchPosts>(fetchPostQuery, {variables: { cursor: $cursor }})
+  return useQuery<FetchPosts>(fetchPostQuery, { variables: { cursor: $cursor } })
 }
 
-export function fetchPostDetails($postId: number, $cursor?: string) {
-  return useQuery<FetchPostDetails>(fetchPostDetailsQuery, {variables: { postId: $postId, cursor: $cursor }})
+export function fetchPostComments($postId: number, $cursor?: string) {
+  return useQuery<FetchPostDetails>(fetchPostCommentsQuery, { variables: { postId: $postId, cursor: $cursor } })
 }
