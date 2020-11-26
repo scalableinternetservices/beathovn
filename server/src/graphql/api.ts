@@ -225,7 +225,7 @@ export const graphqlRoot: Resolvers<Context> = {
         const cursorInt = parseInt(cursor)
         oldestCommentIndex = fullPost.comments.findIndex(comment => comment.id === cursorInt)
       }
-      const limit = 10
+      const limit = 5
 
       const newCursorIndex = Math.min(oldestCommentIndex + limit, fullPost.comments.length)
 
