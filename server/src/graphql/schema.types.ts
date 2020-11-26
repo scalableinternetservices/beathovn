@@ -17,13 +17,22 @@ export interface Query {
   self?: Maybe<User>
   surveys: Array<Survey>
   survey?: Maybe<Survey>
-  posts: Array<PostWithLikeCount>
+  posts?: Maybe<PostFeed>
+  postDetails?: Maybe<PostWithLikeCount>
   following: Array<User>
   followers: Array<User>
 }
 
 export interface QuerySurveyArgs {
   surveyId: Scalars['Int']
+}
+
+export interface QueryPostsArgs {
+  cursor?: Maybe<Scalars['String']>
+}
+
+export interface QueryPostDetailsArgs {
+  postId: Scalars['Int']
 }
 
 export interface QueryFollowingArgs {
@@ -157,8 +166,27 @@ export interface PostWithLikeCount {
   musicLink: Scalars['String']
   commentary?: Maybe<Scalars['String']>
   comments: Array<Comment>
+  commentFeed?: Maybe<CommentFeed>
   likes: Scalars['Int']
   user?: Maybe<User>
+}
+
+export interface PostWithLikeCountCommentFeedArgs {
+  cursor?: Maybe<Scalars['String']>
+}
+
+export interface PostFeed {
+  __typename?: 'PostFeed'
+  cursor: Scalars['String']
+  hasMore: Scalars['Boolean']
+  posts: Array<PostWithLikeCount>
+}
+
+export interface CommentFeed {
+  __typename?: 'CommentFeed'
+  cursor: Scalars['String']
+  hasMore: Scalars['Boolean']
+  comments: Array<Maybe<Comment>>
 }
 
 export interface SurveyInput {
@@ -266,11 +294,11 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>
   Int: ResolverTypeWrapper<Scalars['Int']>
+  String: ResolverTypeWrapper<Scalars['String']>
   Mutation: ResolverTypeWrapper<{}>
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>
   Subscription: ResolverTypeWrapper<{}>
   User: ResolverTypeWrapper<User>
-  String: ResolverTypeWrapper<Scalars['String']>
   UserType: UserType
   Survey: ResolverTypeWrapper<Survey>
   SurveyQuestion: ResolverTypeWrapper<SurveyQuestion>
@@ -280,6 +308,8 @@ export type ResolversTypes = {
   Like: ResolverTypeWrapper<Like>
   Post: ResolverTypeWrapper<Post>
   PostWithLikeCount: ResolverTypeWrapper<PostWithLikeCount>
+  PostFeed: ResolverTypeWrapper<PostFeed>
+  CommentFeed: ResolverTypeWrapper<CommentFeed>
   SurveyInput: SurveyInput
   PostInput: PostInput
   CommentInput: CommentInput
@@ -291,11 +321,11 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Query: {}
   Int: Scalars['Int']
+  String: Scalars['String']
   Mutation: {}
   Boolean: Scalars['Boolean']
   Subscription: {}
   User: User
-  String: Scalars['String']
   Survey: Survey
   SurveyQuestion: SurveyQuestion
   SurveyAnswer: SurveyAnswer
@@ -304,6 +334,8 @@ export type ResolversParentTypes = {
   Like: Like
   Post: Post
   PostWithLikeCount: PostWithLikeCount
+  PostFeed: PostFeed
+  CommentFeed: CommentFeed
   SurveyInput: SurveyInput
   PostInput: PostInput
   CommentInput: CommentInput
@@ -323,7 +355,13 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QuerySurveyArgs, 'surveyId'>
   >
-  posts?: Resolver<Array<ResolversTypes['PostWithLikeCount']>, ParentType, ContextType>
+  posts?: Resolver<Maybe<ResolversTypes['PostFeed']>, ParentType, ContextType, RequireFields<QueryPostsArgs, never>>
+  postDetails?: Resolver<
+    Maybe<ResolversTypes['PostWithLikeCount']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryPostDetailsArgs, 'postId'>
+  >
   following?: Resolver<
     Array<ResolversTypes['User']>,
     ParentType,
@@ -489,8 +527,34 @@ export type PostWithLikeCountResolvers<
   musicLink?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   commentary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>
+  commentFeed?: Resolver<
+    Maybe<ResolversTypes['CommentFeed']>,
+    ParentType,
+    ContextType,
+    RequireFields<PostWithLikeCountCommentFeedArgs, never>
+  >
   likes?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>
+}
+
+export type PostFeedResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['PostFeed'] = ResolversParentTypes['PostFeed']
+> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  hasMore?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
+  posts?: Resolver<Array<ResolversTypes['PostWithLikeCount']>, ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>
+}
+
+export type CommentFeedResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['CommentFeed'] = ResolversParentTypes['CommentFeed']
+> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  hasMore?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
+  comments?: Resolver<Array<Maybe<ResolversTypes['Comment']>>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
@@ -507,6 +571,8 @@ export type Resolvers<ContextType = any> = {
   Like?: LikeResolvers<ContextType>
   Post?: PostResolvers<ContextType>
   PostWithLikeCount?: PostWithLikeCountResolvers<ContextType>
+  PostFeed?: PostFeedResolvers<ContextType>
+  CommentFeed?: CommentFeedResolvers<ContextType>
 }
 
 /**

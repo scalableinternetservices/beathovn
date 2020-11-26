@@ -21,7 +21,8 @@ type Query {
   surveys: [Survey!]!
   survey (surveyId: Int!): Survey
 
-  posts: [PostWithLikeCount!]!
+  posts (cursor: String): PostFeed
+  postDetails(postId: Int!): PostWithLikeCount
 
   # Who is this user following
   following (userId: Int!): [User!]!
@@ -105,7 +106,7 @@ type SurveyAnswer {
 
 type Comment {
   id: Int!
-  # timeCreated: Int!
+  # timeCreated: Int
   text: String!
   post: Post!
   user: User!
@@ -136,12 +137,25 @@ type Post {
 
 type PostWithLikeCount {
   id: Int!
-  # timeCreated: Int!
   musicLink: String!
   commentary: String
   comments: [Comment!]!
+  commentFeed(cursor: String): CommentFeed
   likes: Int!
   user: User
+  # timeCreated: Int
+}
+
+type PostFeed {
+  cursor: String!
+  hasMore: Boolean!
+  posts: [PostWithLikeCount!]!
+}
+
+type CommentFeed {
+  cursor: String!
+  hasMore: Boolean!
+  comments: [Comment]!
 }
 
 input SurveyInput {
