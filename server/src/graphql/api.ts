@@ -210,30 +210,29 @@ export const graphqlRoot: Resolvers<Context> = {
   },
   PostWithLikeCount: {
     commentFeed: async (post, { cursor }) => {
-      const fullPost = post
-      if (!fullPost) {
+      const fullPost = check(await Post.findOne({ where: { id: post.id }, relations: ['comments', 'comments.user'] }))
+      if (!fullPost || !fullPost.comments.length) {
         return {
           cursor: '',
           comments: [],
           hasMore: false,
         }
       }
-
-      let newestCommentIndex: number
+      let oldestCommentIndex: number
       if (!cursor) {
-        newestCommentIndex = fullPost.comments.length
+        oldestCommentIndex = 0
       } else {
         const cursorInt = parseInt(cursor)
-        newestCommentIndex = fullPost.comments.findIndex(comment => comment.id === cursorInt)
+        oldestCommentIndex = fullPost.comments.findIndex(comment => comment.id === cursorInt)
       }
       const limit = 10
 
-      const newCursor = fullPost.comments[Math.max(newestCommentIndex - limit, 0)].id
+      const newCursorIndex = Math.min(oldestCommentIndex + limit, fullPost.comments.length)
 
       const commentFeed = {
-        comments: fullPost.comments.slice(Math.max(newestCommentIndex - limit, 0), newestCommentIndex),
-        cursor: String(newCursor),
-        hasMore: newestCommentIndex - limit > 0,
+        comments: fullPost.comments.slice(oldestCommentIndex, newCursorIndex),
+        cursor: String(fullPost.comments[(newCursorIndex == fullPost.comments.length) ? newCursorIndex - 1 : newCursorIndex].id),
+        hasMore: newCursorIndex < (fullPost.comments.length - 1),
       }
 
       return commentFeed
