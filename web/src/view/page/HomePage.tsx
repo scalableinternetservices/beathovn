@@ -9,17 +9,14 @@ import { Post } from './Post'
 import { PostForm } from './PostForm'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface PostsPageProps extends RouteComponentProps, AppRouteParams { }
-
+interface PostsPageProps extends RouteComponentProps, AppRouteParams {}
 
 export function PostsPage(props: PostsPageProps) {
   //const [posts, setPosts] = useState([])
   const { loading, data } = useQuery<FetchPosts>(fetchPosts)
 
   if (loading) {
-    return (
-      <div>Loading....</div>
-    )
+    return <div>Loading....</div>
   }
   if (!data || data.posts.length === 0) {
     return (
@@ -29,16 +26,16 @@ export function PostsPage(props: PostsPageProps) {
       </Page>
     )
   }
-  console.log("Posts length is : " + data.posts.length)
-  for (var i = 0; i < data.posts.length; i++) {
-    console.log(data.posts[i].commentary)
-  }
+  console.log('Posts length is : ' + data.posts.length)
+  // for (let i = 0; i < data.posts.length; i++) {
+  //   console.log('updated output', data.posts[i])
+  // }
   return (
     <Page>
       <PostForm />
       {data.posts.map((p, i) => (
         <div key={i}>
-          <Post musicLink={p.musicLink} commentary={p.commentary} />
+          <Post postData={p}/>
         </div>
       ))}
     </Page>
