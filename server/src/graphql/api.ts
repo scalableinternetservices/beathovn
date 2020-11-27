@@ -31,15 +31,49 @@ export const graphqlRoot: Resolvers<Context> = {
     self: (_, args, ctx) => ctx.user,
     survey: async (_, { surveyId }) => (await Survey.findOne({ where: { id: surveyId } })) || null,
     surveys: () => Survey.find(),
-    posts: () =>
-      Post.find({ relations: ['user', 'likes', 'comments', 'comments.user'] }).then(rows =>
+    posts: async (_, { cursor }) => {
+      const postsWithLikes = await Post.find({ relations: ['user', 'likes', 'comments', 'comments.user'] }).then(rows =>
         rows.map(row => {
           return {
             ...row,
             likes: row.likes?.length || 0,
           }
         })
-      ),
+      )
+      let newestPostIndex: number
+      if (!cursor) {
+        newestPostIndex = postsWithLikes.length
+      } else {
+        const cursorInt = parseInt(cursor)
+        newestPostIndex = postsWithLikes.findIndex(p => p.id === cursorInt)
+      }
+
+      const limit = 10
+
+      const newCursor = postsWithLikes[Math.max(newestPostIndex - limit, 0)].id
+
+      const postFeed = {
+        posts: postsWithLikes.slice(Math.max(0, newestPostIndex - limit), newestPostIndex).reverse(),
+        cursor: String(newCursor),
+        hasMore: newestPostIndex - limit > 0,
+      }
+
+      return postFeed
+    },
+    postDetails: (_, { postId }) => {
+      return Post.findOne({ where: { id: postId }, relations: ['user', 'likes', 'comments', 'comments.user'] }).then(
+        res => {
+          if (res) {
+            return {
+              ...res,
+              likes: res.likes?.length || 0,
+            }
+          } else {
+            return null
+          }
+        }
+      )
+    },
     followers: (_, { userId }) => {
       return Following.find({ where: { followee: userId }, relations: ['follower'] }).then(rows =>
         rows.map(row => row.follower)
@@ -172,6 +206,36 @@ export const graphqlRoot: Resolvers<Context> = {
       await followeeUser.save()
 
       return true
+    },
+  },
+  PostWithLikeCount: {
+    commentFeed: async (post, { cursor }) => {
+      const fullPost = check(await Post.findOne({ where: { id: post.id }, relations: ['comments', 'comments.user'] }))
+      if (!fullPost || !fullPost.comments.length) {
+        return {
+          cursor: '',
+          comments: [],
+          hasMore: false,
+        }
+      }
+      let oldestCommentIndex: number
+      if (!cursor) {
+        oldestCommentIndex = 0
+      } else {
+        const cursorInt = parseInt(cursor)
+        oldestCommentIndex = fullPost.comments.findIndex(comment => comment.id === cursorInt)
+      }
+      const limit = 5
+
+      const newCursorIndex = Math.min(oldestCommentIndex + limit, fullPost.comments.length)
+
+      const commentFeed = {
+        comments: fullPost.comments.slice(oldestCommentIndex, newCursorIndex),
+        cursor: String(fullPost.comments[(newCursorIndex == fullPost.comments.length) ? newCursorIndex - 1 : newCursorIndex].id),
+        hasMore: newCursorIndex < (fullPost.comments.length - 1),
+      }
+
+      return commentFeed
     },
   },
   Subscription: {

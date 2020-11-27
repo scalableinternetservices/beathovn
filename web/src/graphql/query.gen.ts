@@ -77,7 +77,7 @@ export interface FetchFollowersVariables {
 // GraphQL query operation: FetchPosts
 // ====================================================
 
-export interface FetchPosts_posts_comments_user {
+export interface FetchPosts_posts_posts_user {
   __typename: "User";
   id: number;
   name: string;
@@ -85,33 +85,74 @@ export interface FetchPosts_posts_comments_user {
   userType: UserType;
 }
 
-export interface FetchPosts_posts_comments {
-  __typename: "Comment";
-  id: number;
-  text: string;
-  user: FetchPosts_posts_comments_user;
-}
-
-export interface FetchPosts_posts_user {
-  __typename: "User";
-  id: number;
-  name: string;
-  email: string;
-  userType: UserType;
-}
-
-export interface FetchPosts_posts {
+export interface FetchPosts_posts_posts {
   __typename: "PostWithLikeCount";
   id: number;
   musicLink: string;
   commentary: string | null;
   likes: number;
-  comments: FetchPosts_posts_comments[];
-  user: FetchPosts_posts_user | null;
+  user: FetchPosts_posts_posts_user | null;
+}
+
+export interface FetchPosts_posts {
+  __typename: "PostFeed";
+  cursor: string;
+  hasMore: boolean;
+  posts: FetchPosts_posts_posts[];
 }
 
 export interface FetchPosts {
-  posts: FetchPosts_posts[];
+  posts: FetchPosts_posts | null;
+}
+
+export interface FetchPostsVariables {
+  cursor?: string | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: FetchPostDetails
+// ====================================================
+
+export interface FetchPostDetails_postDetails_commentFeed_comments_user {
+  __typename: "User";
+  id: number;
+  name: string;
+  email: string;
+  userType: UserType;
+}
+
+export interface FetchPostDetails_postDetails_commentFeed_comments {
+  __typename: "Comment";
+  id: number;
+  text: string;
+  user: FetchPostDetails_postDetails_commentFeed_comments_user;
+}
+
+export interface FetchPostDetails_postDetails_commentFeed {
+  __typename: "CommentFeed";
+  cursor: string;
+  hasMore: boolean;
+  comments: (FetchPostDetails_postDetails_commentFeed_comments | null)[];
+}
+
+export interface FetchPostDetails_postDetails {
+  __typename: "PostWithLikeCount";
+  id: number;
+  commentFeed: FetchPostDetails_postDetails_commentFeed | null;
+}
+
+export interface FetchPostDetails {
+  postDetails: FetchPostDetails_postDetails | null;
+}
+
+export interface FetchPostDetailsVariables {
+  postId: number;
+  cursor?: string | null;
 }
 
 /* tslint:disable */
@@ -411,21 +452,6 @@ export interface Comment {
 // GraphQL fragment: PostWithLikeCount
 // ====================================================
 
-export interface PostWithLikeCount_comments_user {
-  __typename: "User";
-  id: number;
-  name: string;
-  email: string;
-  userType: UserType;
-}
-
-export interface PostWithLikeCount_comments {
-  __typename: "Comment";
-  id: number;
-  text: string;
-  user: PostWithLikeCount_comments_user;
-}
-
 export interface PostWithLikeCount_user {
   __typename: "User";
   id: number;
@@ -440,8 +466,40 @@ export interface PostWithLikeCount {
   musicLink: string;
   commentary: string | null;
   likes: number;
-  comments: PostWithLikeCount_comments[];
   user: PostWithLikeCount_user | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: PostFeed
+// ====================================================
+
+export interface PostFeed_posts_user {
+  __typename: "User";
+  id: number;
+  name: string;
+  email: string;
+  userType: UserType;
+}
+
+export interface PostFeed_posts {
+  __typename: "PostWithLikeCount";
+  id: number;
+  musicLink: string;
+  commentary: string | null;
+  likes: number;
+  user: PostFeed_posts_user | null;
+}
+
+export interface PostFeed {
+  __typename: "PostFeed";
+  cursor: string;
+  hasMore: boolean;
+  posts: PostFeed_posts[];
 }
 
 /* tslint:disable */

@@ -1,4 +1,5 @@
-import { gql } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
+import { FetchPostDetails, FetchPosts } from '../../graphql/query.gen'
 
 export const fragmentUser = gql`
   fragment User on User {
@@ -25,22 +26,54 @@ export const fragmentPostWithLikeCount = gql`
     musicLink
     commentary
     likes
-    comments {
-      ...Comment
-    }
     user {
       ...User
     }
   }
 `
 
-export const fetchPosts = gql`
-  query FetchPosts {
+export const fragmentPostFeed = gql`
+  fragment PostFeed on PostFeed {
+    cursor
+    hasMore
     posts {
       ...PostWithLikeCount
     }
   }
+`
+
+export const fetchPostQuery = gql`
+  query FetchPosts($cursor: String) {
+    posts(cursor: $cursor) {
+      ...PostFeed
+    }
+  }
   ${fragmentUser}
   ${fragmentPostWithLikeCount}
+  ${fragmentPostFeed}
+`
+
+const fetchPostCommentsQuery = gql`
+  query FetchPostDetails($postId: Int!, $cursor: String) {
+    postDetails(postId: $postId) {
+      id
+      commentFeed(cursor: $cursor) {
+        cursor
+        hasMore
+        comments {
+          ...Comment
+        }
+      }
+    }
+  }
+  ${fragmentUser}
   ${fragmentComment}
 `
+
+export function fetchPosts($cursor?: string) {
+  return useQuery<FetchPosts>(fetchPostQuery, { variables: { cursor: $cursor } })
+}
+
+export function fetchPostComments($postId: number, $cursor?: string) {
+  return useQuery<FetchPostDetails>(fetchPostCommentsQuery, { variables: { postId: $postId, cursor: $cursor } })
+}

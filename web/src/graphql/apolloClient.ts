@@ -5,6 +5,7 @@ import { HttpLink } from '@apollo/client/link/http'
 import { WebSocketLink } from '@apollo/client/link/ws'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { appContext } from '../../../common/src/context'
+import { FetchPosts_posts, FetchPosts_posts_posts } from './query.gen'
 
 let clientSingleton: ApolloClient<NormalizedCacheObject> | undefined = undefined
 
@@ -65,7 +66,65 @@ export function getApolloClient() {
 
   const link = authLink.concat(errorLink).concat(splitLink)
 
-  const cache = new InMemoryCache()
+  const cache = new InMemoryCache({
+    //TODO: build merge shit for posts
+    typePolicies: {
+      Query: {
+        fields: {
+          posts: {
+            keyArgs: false,
+            merge(existing: FetchPosts_posts, incoming: FetchPosts_posts): FetchPosts_posts {
+              if (!existing) {
+                return incoming
+              }
+
+              let mergedPosts: FetchPosts_posts_posts[] = []
+              if (existing.posts) mergedPosts = mergedPosts.concat(existing.posts)
+              if (incoming.posts) {
+                mergedPosts = mergedPosts.concat(incoming.posts)
+              }
+
+              return {
+                ...incoming,
+                posts: mergedPosts,
+              }
+            },
+          },
+        },
+      },
+      PostWithLikeCount: {
+        fields: {
+          commentFeed: {
+            keyArgs: false,
+            merge: (existing , incoming) => {
+              if (!existing) {
+                return incoming
+              }
+
+              let mergedComments: any[] = []
+              let seenIds: {[key: string]: boolean} = {}
+              if (existing.comments) {
+                mergedComments = mergedComments.concat(existing.comments)
+                existing.comments.map((cmnt:any) => {
+                  if (cmnt?.__ref) {
+                    seenIds[cmnt.__ref] = true
+                  }
+                })
+              }
+              if (incoming.comments) {
+                mergedComments = mergedComments.concat(incoming.comments.filter((cmnt:any) => cmnt?.__ref && !seenIds[cmnt.__ref]))
+              }
+
+              return {
+                ...incoming,
+                comments: mergedComments
+              }
+            }
+          }
+        }
+      }
+    },
+  })
   if (appCtx.apolloState) {
     cache.restore(appCtx.apolloState)
   }
