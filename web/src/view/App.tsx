@@ -60,7 +60,7 @@ export function AppBody() {
         <PostsPage path={Route.HOME} />
       </Router>
       <Footer>
-        <FooterText>© 2020 John Rothfels</FooterText>
+        <FooterText>© 2020 Beathovn</FooterText>
       </Footer>
     </>
   )
