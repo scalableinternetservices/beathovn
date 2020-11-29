@@ -20,7 +20,7 @@ export const options = {
 export default function () {
   http.post(
     'http://localhost:3000/graphql',
-    '{"operationName":"CreatePost","variables":{"input":{"musicLink":"link","commentary":"comment"}},"query":"mutation CreatePost($input: PostInput!) {\n  createPost(input: $input) {\n    id\n    __typename\n  }\n}\n"}',
+    '{"operationName":"LikePost","variables":{"postId":1},"query":"mutation LikePost($postId: Int!) {\n  likePost(postId: $postId)\n}\n"}',
     {
       headers: {
         'Content-Type': 'application/json',
