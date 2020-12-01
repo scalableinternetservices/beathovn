@@ -27,6 +27,8 @@ import { ConnectionManager } from './graphql/ConnectionManager'
 import { expressLambdaProxy } from './lambda/handler'
 import { renderApp } from './render'
 
+const previewGenerator = require('link-preview-generator')
+
 const server = new GraphQLServer({
   typeDefs: getSchema(),
   resolvers: graphqlRoot as any,
@@ -49,6 +51,13 @@ server.express.get('/', (req, res) => {
 server.express.get('/app/*', (req, res) => {
   console.log('GET /app')
   renderApp(req, res, server.executableSchema)
+})
+
+server.express.post('/link', async (req, res) => {
+  console.log(req)
+  const { url } = req.body
+  const previewData = await previewGenerator(url)
+  res.status(200).send(JSON.stringify(previewData))
 })
 
 server.express.post(

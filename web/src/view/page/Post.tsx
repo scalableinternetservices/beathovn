@@ -65,11 +65,14 @@ export function Post(props: { postData: PostWithLikeCount }) {
     return (
       <div>
         <h3>WE ARE DISPLAYING THE COMMENTS</h3>
-        {comments.map((cmnt, i) => (
-          cmnt && (<h2 key={i}>
-            {cmnt.user?.name || 'anon'}: {cmnt.text}
-          </h2>)
-        ))}
+        {comments.map(
+          (cmnt, i) =>
+            cmnt && (
+              <h2 key={i}>
+                {cmnt.user?.name || 'anon'}: {cmnt.text}
+              </h2>
+            )
+        )}
         {comments &&
           (commentData?.postDetails?.commentFeed?.hasMore || staleComments) &&
           (loadingComments ? <div> Loading comments... </div> : <Button onClick={fetchMoreComments}>Load More</Button>)}
@@ -96,12 +99,29 @@ export function Post(props: { postData: PostWithLikeCount }) {
     )
   }
 
+  //TODO: NEED TO CHANGE THIS LINK DEPENDING ON WHERE THE SERVER IS BEING HOSTED
+  let imageURL = ''
+  const serverURL = 'http://localhost:3000/link' as string
+  const httpRequest = new XMLHttpRequest()
+  httpRequest.open('POST', serverURL)
+  httpRequest.setRequestHeader('Content-Type', 'application/json')
+  httpRequest.send(JSON.stringify({ url: props.postData.musicLink }))
+  httpRequest.onreadystatechange = function () {
+    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+      const previewData = JSON.parse(httpRequest.response)
+      console.log(previewData.img)
+      imageURL = previewData.img as string
+        ; (document.querySelector('.img') as HTMLInputElement).src = previewData.img
+    }
+  }
+
   return (
     <div className="card" style={cardStyle}>
       <div className="container" style={containerStyle}>
         <a href={props.postData.musicLink} target="_blank">
           Song Link
         </a>
+        <img className="img" src={imageURL}></img>
         <h3>{props.postData.commentary}</h3>
         <h3>likes: {props.postData.likes} </h3>
         {user && (
