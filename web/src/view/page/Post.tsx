@@ -31,6 +31,19 @@ const commentButtonStyle: CSS.Properties = {
   color: '#FFFFFF',
   margin: '10px',
 }
+const imageStyle: CSS.Properties = {
+  width: '50%',
+}
+
+const infoStyle: CSS.Properties = {
+  textAlign: 'center',
+  fontSize: '3vw',
+}
+
+const wrapperStyle: CSS.Properties = {
+  float: 'right',
+  width: '50%',
+}
 
 export function Post(props: { postData: PostWithLikeCount }) {
   const [displayComments, setDisplayComments] = useState(false)
@@ -100,7 +113,7 @@ export function Post(props: { postData: PostWithLikeCount }) {
   }
 
   //TODO: NEED TO CHANGE THIS LINK DEPENDING ON WHERE THE SERVER IS BEING HOSTED
-  let imageURL = ''
+  const imageURL = ''
   const serverURL = 'http://localhost:3000/link' as string
   const httpRequest = new XMLHttpRequest()
   httpRequest.open('POST', serverURL)
@@ -109,21 +122,27 @@ export function Post(props: { postData: PostWithLikeCount }) {
   httpRequest.onreadystatechange = function () {
     if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
       const previewData = JSON.parse(httpRequest.response)
-      console.log(previewData.img)
-      imageURL = previewData.img as string
         ; (document.querySelector('.img') as HTMLInputElement).src = previewData.img
+        ; (document.querySelector('.Title') as HTMLInputElement).innerHTML = previewData.title
+        ; (document.querySelector('.description') as HTMLInputElement).innerHTML = previewData.description
     }
   }
 
   return (
     <div className="card" style={cardStyle}>
       <div className="container" style={containerStyle}>
-        <a href={props.postData.musicLink} target="_blank">
-          Song Link
-        </a>
-        <img className="img" src={imageURL}></img>
-        <h3>{props.postData.commentary}</h3>
-        <h3>likes: {props.postData.likes} </h3>
+        <img className="img" src={imageURL} style={imageStyle}></img>
+        <div style={wrapperStyle}>
+          <div style={infoStyle}>
+            <a href={props.postData.musicLink} target="_blank" className="Title">
+              Song Link
+            </a>
+            <h2 className="description"></h2>
+            <h3>{props.postData.commentary}</h3>
+            <h3>likes: {props.postData.likes} </h3>
+          </div>
+        </div>
+
         {user && (
           <Button style={likeButtonStyle} type="button" onClick={likeButtonHandler}>
             👍
