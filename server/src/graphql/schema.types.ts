@@ -80,6 +80,8 @@ export interface MutationFollowUserArgs {
 export interface Subscription {
   __typename?: 'Subscription'
   surveyUpdates?: Maybe<Survey>
+  postFeedUpdates?: Maybe<PostWithLikeCount>
+  postUpdates?: Maybe<PostWithLikeCount>
 }
 
 export interface SubscriptionSurveyUpdatesArgs {
@@ -424,6 +426,13 @@ export type SubscriptionResolvers<
     ContextType,
     RequireFields<SubscriptionSurveyUpdatesArgs, 'surveyId'>
   >
+  postFeedUpdates?: SubscriptionResolver<
+    Maybe<ResolversTypes['PostWithLikeCount']>,
+    'postFeedUpdates',
+    ParentType,
+    ContextType
+  >
+  postUpdates?: SubscriptionResolver<Maybe<ResolversTypes['PostWithLikeCount']>, 'postUpdates', ParentType, ContextType>
 }
 
 export type UserResolvers<
