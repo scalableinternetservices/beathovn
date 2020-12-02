@@ -65,11 +65,14 @@ export function Post(props: { postData: PostWithLikeCount }) {
     return (
       <div>
         <h3>WE ARE DISPLAYING THE COMMENTS</h3>
-        {comments.map((cmnt, i) => (
-          cmnt && (<h2 key={i}>
-            {cmnt.user?.name || 'anon'}: {cmnt.text}
-          </h2>)
-        ))}
+        {comments.map(
+          (cmnt, i) =>
+            cmnt && (
+              <h2 key={i}>
+                {cmnt.user?.name || 'anon'}: {cmnt.text}
+              </h2>
+            )
+        )}
         {comments &&
           (commentData?.postDetails?.commentFeed?.hasMore || staleComments) &&
           (loadingComments ? <div> Loading comments... </div> : <Button onClick={fetchMoreComments}>Load More</Button>)}
