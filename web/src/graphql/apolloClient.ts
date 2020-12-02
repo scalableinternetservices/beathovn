@@ -3,9 +3,9 @@ import { setContext } from '@apollo/client/link/context'
 import { onError } from '@apollo/client/link/error'
 import { HttpLink } from '@apollo/client/link/http'
 import { WebSocketLink } from '@apollo/client/link/ws'
-import { getMainDefinition } from '@apollo/client/utilities'
+import { getMainDefinition, Reference } from '@apollo/client/utilities'
 import { appContext } from '../../../common/src/context'
-import { FetchPosts_posts, FetchPosts_posts_posts } from './query.gen'
+import { FetchPosts_posts } from './query.gen'
 
 let clientSingleton: ApolloClient<NormalizedCacheObject> | undefined = undefined
 
@@ -73,15 +73,22 @@ export function getApolloClient() {
         fields: {
           posts: {
             keyArgs: false,
-            merge(existing: FetchPosts_posts, incoming: FetchPosts_posts): FetchPosts_posts {
+            merge(existing, incoming, { readField }): FetchPosts_posts {
               if (!existing) {
                 return incoming
               }
+              if (!incoming) {
+                return existing
+              }
 
-              let mergedPosts: FetchPosts_posts_posts[] = []
+              let mergedPosts: Reference[] = []
               if (existing.posts) mergedPosts = mergedPosts.concat(existing.posts)
-              if (incoming.posts) {
-                mergedPosts = mergedPosts.concat(incoming.posts)
+              if (incoming.posts?.length) {
+                if ((readField<number>("id", incoming.posts[0]) || 0) > (readField<number>("id", mergedPosts[0]) || 0)) {
+                  mergedPosts = [...incoming.posts, ...mergedPosts]
+                } else {
+                  mergedPosts = mergedPosts.concat(incoming.posts)
+                }
               }
 
               return {
@@ -96,33 +103,45 @@ export function getApolloClient() {
         fields: {
           commentFeed: {
             keyArgs: false,
-            merge: (existing , incoming) => {
+            merge: (existing, incoming) => {
               if (!existing) {
                 return incoming
               }
 
               let mergedComments: any[] = []
-              let seenIds: {[key: string]: boolean} = {}
+              const seenIds: { [key: string]: boolean } = {}
               if (existing.comments) {
                 mergedComments = mergedComments.concat(existing.comments)
-                existing.comments.map((cmnt:any) => {
+                existing.comments.map((cmnt: any) => {
                   if (cmnt?.__ref) {
                     seenIds[cmnt.__ref] = true
                   }
                 })
               }
               if (incoming.comments) {
-                mergedComments = mergedComments.concat(incoming.comments.filter((cmnt:any) => cmnt?.__ref && !seenIds[cmnt.__ref]))
+                mergedComments = mergedComments.concat(
+                  incoming.comments.filter((cmnt: any) => cmnt?.__ref && !seenIds[cmnt.__ref])
+                )
               }
 
               return {
                 ...incoming,
-                comments: mergedComments
+                comments: mergedComments,
               }
+            },
+          },
+          likes: {
+            keyArgs: false,
+            merge: (existing, incoming, { readField }) => {
+              if (!existing) {
+                return incoming
+              }
+              console.log('In like merger: [existing, incoming]', existing, incoming)
+              return Math.max(existing, incoming)
             }
           }
-        }
-      }
+        },
+      },
     },
   })
   if (appCtx.apolloState) {

@@ -70,6 +70,25 @@ const fetchPostCommentsQuery = gql`
   ${fragmentComment}
 `
 
+export const postFeedSubscription = gql`
+  subscription PostFeedSubscription {
+    postFeedUpdates {
+      ...PostWithLikeCount
+    }
+  }
+  ${fragmentPostWithLikeCount}
+  ${fragmentUser}
+`
+
+export const postUpdatesSubscription = gql`
+  subscription PostUpdatesSubscription {
+    postUpdates {
+      id
+      likes
+    }
+  }
+`
+
 export function fetchPosts($cursor?: string) {
   return useQuery<FetchPosts>(fetchPostQuery, { variables: { cursor: $cursor } })
 }

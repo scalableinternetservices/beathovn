@@ -161,6 +161,36 @@ export interface FetchPostDetailsVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL subscription operation: PostFeedSubscription
+// ====================================================
+
+export interface PostFeedSubscription_postUpdates_user {
+  __typename: "User";
+  id: number;
+  name: string;
+  email: string;
+  userType: UserType;
+}
+
+export interface PostFeedSubscription_postUpdates {
+  __typename: "PostWithLikeCount";
+  id: number;
+  musicLink: string;
+  commentary: string | null;
+  likes: number;
+  user: PostFeedSubscription_postUpdates_user | null;
+}
+
+export interface PostFeedSubscription {
+  postUpdates: PostFeedSubscription_postUpdates | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: FetchSurveys
 // ====================================================
 

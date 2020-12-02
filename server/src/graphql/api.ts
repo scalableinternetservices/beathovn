@@ -40,6 +40,15 @@ export const graphqlRoot: Resolvers<Context> = {
           }
         })
       )
+
+      if (postsWithLikes.length == 0) {
+        return {
+          posts: postsWithLikes,
+          cursor: '',
+          hasMore: false,
+        }
+      }
+
       let newestPostIndex: number
       if (!cursor) {
         newestPostIndex = postsWithLikes.length
@@ -123,7 +132,10 @@ export const graphqlRoot: Resolvers<Context> = {
         post.user.posts.push(post)
         await post.user.save()
       }
-      // ctx.pubsub.publish('CREATE_POST', post)
+
+      // const payload = { post: postToPostWithLikeCount(post) }
+      ctx.pubsub.publish('CREATE_POST', postToPostWithLikeCount(post))
+
       return post
     },
     createComment: async (_, { input }, ctx) => {
@@ -173,6 +185,9 @@ export const graphqlRoot: Resolvers<Context> = {
       // Add like to user
       like.user?.likes.push(like)
       await like.user?.save()
+
+      // const payload = { post: postToPostWithLikeCount(post) }
+      ctx.pubsub.publish('UPDATE_POST', postToPostWithLikeCount(post))
 
       return true
     },
@@ -231,8 +246,10 @@ export const graphqlRoot: Resolvers<Context> = {
 
       const commentFeed = {
         comments: fullPost.comments.slice(oldestCommentIndex, newCursorIndex),
-        cursor: String(fullPost.comments[(newCursorIndex == fullPost.comments.length) ? newCursorIndex - 1 : newCursorIndex].id),
-        hasMore: newCursorIndex < (fullPost.comments.length - 1),
+        cursor: String(
+          fullPost.comments[newCursorIndex == fullPost.comments.length ? newCursorIndex - 1 : newCursorIndex].id
+        ),
+        hasMore: newCursorIndex < fullPost.comments.length - 1,
       }
 
       return commentFeed
@@ -243,5 +260,17 @@ export const graphqlRoot: Resolvers<Context> = {
       subscribe: (_, { surveyId }, context) => context.pubsub.asyncIterator('SURVEY_UPDATE_' + surveyId),
       resolve: (payload: any) => payload,
     },
+    postFeedUpdates: {
+      subscribe: (_, __, context) => context.pubsub.asyncIterator('CREATE_POST'),
+      resolve: (payload: any) => payload,
+    },
+    postUpdates: {
+      subscribe: (_, __, context) => context.pubsub.asyncIterator('UPDATE_POST'),
+      resolve: (payload: any) => payload,
+    },
   },
+}
+
+const postToPostWithLikeCount = (post: Post) => {
+  return { ...post, likes: post.likes?.length || 0 }
 }

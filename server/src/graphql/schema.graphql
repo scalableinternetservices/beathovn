@@ -48,6 +48,8 @@ type Mutation {
 
 type Subscription {
   surveyUpdates (surveyId: Int!): Survey
+  postFeedUpdates: PostWithLikeCount
+  postUpdates: PostWithLikeCount
 }
 
 type User {

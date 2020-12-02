@@ -1,21 +1,32 @@
+import { useSubscription } from '@apollo/client'
 import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import { useContext, useState } from 'react'
+import { FetchPosts, FetchPosts_posts_posts } from '../../graphql/query.gen'
 import { Button } from '../../style/button'
 import { UserContext } from '../auth/user'
 import { AppRouteParams } from '../nav/route'
-import { fetchPosts } from '../playground/fetchPost'
+import { fetchPosts, postFeedSubscription, postUpdatesSubscription } from '../playground/fetchPost'
 import { Page } from './Page'
 import { Post } from './Post'
 import { PostForm } from './PostForm'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface PostsPageProps extends RouteComponentProps, AppRouteParams {}
+
+const buildFetchPostsWithNewPosts = (prev: FetchPosts, newPosts: FetchPosts_posts_posts[]): FetchPosts => {
+  return Object.assign({}, prev, {
+    posts: {
+      ...prev.posts,
+      posts: newPosts,
+    },
+  })
+}
 
 export function PostsPage(props: PostsPageProps) {
   const { user } = useContext(UserContext)
-  //const [posts, setPosts] = useState([])
-  const { loading, data, fetchMore } = fetchPosts()
+  const { loading, data, fetchMore, subscribeToMore } = fetchPosts()
+  useSubscription(postUpdatesSubscription)
+
   const [isLoadingMore, setIsLoadingMore] = useState(false)
 
   const fetchMorePosts = async () => {
@@ -28,9 +39,32 @@ export function PostsPage(props: PostsPageProps) {
     setIsLoadingMore(false)
   }
 
+  const subscribeToMorePostFeed = () => {
+    subscribeToMore({
+      document: postFeedSubscription,
+      updateQuery: (prev: FetchPosts, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return buildFetchPostsWithNewPosts(prev, [])
+        }
+        const data: any = subscriptionData.data
+        const newPost = data.postFeedUpdates
+        const exists = prev.posts?.posts.find(({ id }) => id === newPost.id)
+
+        if (exists) {
+          return buildFetchPostsWithNewPosts(prev, [])
+        }
+
+        return buildFetchPostsWithNewPosts(prev, [newPost])
+      },
+    })
+  }
+
+  subscribeToMorePostFeed()
+
   if (loading) {
     return <div>Loading....</div>
   }
+
   if (!data || data.posts?.posts.length === 0) {
     return (
       <Page>
