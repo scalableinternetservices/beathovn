@@ -157,6 +157,9 @@ export interface Post {
   __typename?: 'Post'
   id: Scalars['Int']
   musicLink: Scalars['String']
+  musicLinkImg?: Maybe<Scalars['String']>
+  musicLinkTitle?: Maybe<Scalars['String']>
+  musicLinkSite?: Maybe<Scalars['String']>
   commentary?: Maybe<Scalars['String']>
   comments: Array<Comment>
   user?: Maybe<User>
@@ -166,6 +169,9 @@ export interface PostWithLikeCount {
   __typename?: 'PostWithLikeCount'
   id: Scalars['Int']
   musicLink: Scalars['String']
+  musicLinkImg?: Maybe<Scalars['String']>
+  musicLinkTitle?: Maybe<Scalars['String']>
+  musicLinkSite?: Maybe<Scalars['String']>
   commentary?: Maybe<Scalars['String']>
   comments: Array<Comment>
   commentFeed?: Maybe<CommentFeed>
@@ -522,6 +528,9 @@ export type PostResolvers<
 > = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   musicLink?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  musicLinkImg?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  musicLinkTitle?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  musicLinkSite?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   commentary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
@@ -534,6 +543,9 @@ export type PostWithLikeCountResolvers<
 > = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   musicLink?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  musicLinkImg?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  musicLinkTitle?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  musicLinkSite?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   commentary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>
   commentFeed?: Resolver<

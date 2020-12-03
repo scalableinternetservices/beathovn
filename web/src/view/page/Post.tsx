@@ -8,6 +8,7 @@ import { UserContext } from '../auth/user'
 import { fetchPostComments } from '../playground/fetchPost'
 import { createComment } from '../playground/mutateComment'
 import { likePost } from '../playground/mutateLike'
+import { Link } from './Link'
 
 const containerStyle: CSS.Properties = {
   padding: '4px 32px',
@@ -102,9 +103,14 @@ export function Post(props: { postData: PostWithLikeCount }) {
   return (
     <div className="card" style={cardStyle}>
       <div className="container" style={containerStyle}>
-        <a href={props.postData.musicLink} target="_blank">
+        {/* <a href={props.postData.musicLink} target="_blank">
           Song Link
-        </a>
+        </a> */}
+        <Link
+          musicLink={props.postData.musicLink}
+          musicLinkImg={props.postData.musicLinkImg || ''}
+          musicLinkSite={props.postData.musicLinkSite || ''}
+          musicLinkTitle={props.postData.musicLinkTitle || ''}/>
         <h3>{props.postData.commentary}</h3>
         <h3>likes: {props.postData.likes} </h3>
         {user && (

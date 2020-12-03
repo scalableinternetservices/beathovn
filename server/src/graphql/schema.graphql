@@ -132,6 +132,9 @@ type Post {
   id: Int!
   # timeCreated: Int!
   musicLink: String!
+  musicLinkImg: String
+  musicLinkTitle: String
+  musicLinkSite: String
   commentary: String
   comments: [Comment!]!
   user: User
@@ -140,6 +143,9 @@ type Post {
 type PostWithLikeCount {
   id: Int!
   musicLink: String!
+  musicLinkImg: String
+  musicLinkTitle: String
+  musicLinkSite: String
   commentary: String
   comments: [Comment!]!
   commentFeed(cursor: String): CommentFeed

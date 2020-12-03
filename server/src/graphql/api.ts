@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs'
 import { PubSub } from 'graphql-yoga'
+import { getLinkPreview } from 'link-preview-js'
 import path from 'path'
 import { check } from '../../../common/src/util'
 import { Comment } from '../entities/Comment'
@@ -123,9 +124,25 @@ export const graphqlRoot: Resolvers<Context> = {
       const post = new Post()
       post.musicLink = musicLink
       post.commentary = commentary || ''
+      post.musicLinkTitle = ''
+      post.musicLinkSite = ''
+      post.musicLinkImg = ''
       if (ctx.user) {
         post.user = ctx.user
       }
+      await getLinkPreview(musicLink).then((data) => {
+        const dataCopy: any = data
+        if (dataCopy.title) {
+          post.musicLinkTitle = dataCopy.title
+        }
+        if (dataCopy.siteName) {
+          post.musicLinkSite = dataCopy.siteName
+        }
+        if (dataCopy.images.length) {
+          post.musicLinkImg = dataCopy.images[0]
+        }
+      }).catch((e) => {})
+
       await post.save()
 
       if (post.user) {

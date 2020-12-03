@@ -26,6 +26,15 @@ export class Post extends BaseEntity {
   musicLink: string
 
   @Column()
+  musicLinkImg: string
+
+  @Column()
+  musicLinkTitle: string
+
+  @Column()
+  musicLinkSite: string
+
+  @Column()
   commentary: string
 
   @OneToMany(type => Comment, comment => comment.post)
