@@ -24,6 +24,9 @@ export const fragmentPostWithLikeCount = gql`
   fragment PostWithLikeCount on PostWithLikeCount {
     id
     musicLink
+    musicLinkImg
+    musicLinkTitle
+    musicLinkSite
     commentary
     likes
     user {

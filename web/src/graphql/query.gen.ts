@@ -89,6 +89,9 @@ export interface FetchPosts_posts_posts {
   __typename: "PostWithLikeCount";
   id: number;
   musicLink: string;
+  musicLinkImg: string | null;
+  musicLinkTitle: string | null;
+  musicLinkSite: string | null;
   commentary: string | null;
   likes: number;
   user: FetchPosts_posts_posts_user | null;
@@ -164,7 +167,7 @@ export interface FetchPostDetailsVariables {
 // GraphQL subscription operation: PostFeedSubscription
 // ====================================================
 
-export interface PostFeedSubscription_postUpdates_user {
+export interface PostFeedSubscription_postFeedUpdates_user {
   __typename: "User";
   id: number;
   name: string;
@@ -172,17 +175,39 @@ export interface PostFeedSubscription_postUpdates_user {
   userType: UserType;
 }
 
-export interface PostFeedSubscription_postUpdates {
+export interface PostFeedSubscription_postFeedUpdates {
   __typename: "PostWithLikeCount";
   id: number;
   musicLink: string;
+  musicLinkImg: string | null;
+  musicLinkTitle: string | null;
+  musicLinkSite: string | null;
   commentary: string | null;
   likes: number;
-  user: PostFeedSubscription_postUpdates_user | null;
+  user: PostFeedSubscription_postFeedUpdates_user | null;
 }
 
 export interface PostFeedSubscription {
-  postUpdates: PostFeedSubscription_postUpdates | null;
+  postFeedUpdates: PostFeedSubscription_postFeedUpdates | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL subscription operation: PostUpdatesSubscription
+// ====================================================
+
+export interface PostUpdatesSubscription_postUpdates {
+  __typename: "PostWithLikeCount";
+  id: number;
+  likes: number;
+}
+
+export interface PostUpdatesSubscription {
+  postUpdates: PostUpdatesSubscription_postUpdates | null;
 }
 
 /* tslint:disable */
@@ -494,6 +519,9 @@ export interface PostWithLikeCount {
   __typename: "PostWithLikeCount";
   id: number;
   musicLink: string;
+  musicLinkImg: string | null;
+  musicLinkTitle: string | null;
+  musicLinkSite: string | null;
   commentary: string | null;
   likes: number;
   user: PostWithLikeCount_user | null;
@@ -520,6 +548,9 @@ export interface PostFeed_posts {
   __typename: "PostWithLikeCount";
   id: number;
   musicLink: string;
+  musicLinkImg: string | null;
+  musicLinkTitle: string | null;
+  musicLinkSite: string | null;
   commentary: string | null;
   likes: number;
   user: PostFeed_posts_user | null;
