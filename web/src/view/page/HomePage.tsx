@@ -1,7 +1,7 @@
 import { useSubscription } from '@apollo/client'
 import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { FetchPosts, FetchPosts_posts_posts } from '../../graphql/query.gen'
 import { Button } from '../../style/button'
 import { UserContext } from '../auth/user'
@@ -59,7 +59,9 @@ export function PostsPage(props: PostsPageProps) {
     })
   }
 
-  subscribeToMorePostFeed()
+  useEffect(() => {
+    subscribeToMorePostFeed()
+  }, [])
 
   if (loading) {
     return <div>Loading....</div>

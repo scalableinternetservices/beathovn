@@ -124,24 +124,25 @@ export const graphqlRoot: Resolvers<Context> = {
       const post = new Post()
       post.musicLink = musicLink
       post.commentary = commentary || ''
-      post.musicLinkTitle = ''
-      post.musicLinkSite = ''
-      post.musicLinkImg = ''
       if (ctx.user) {
         post.user = ctx.user
       }
-      await getLinkPreview(musicLink).then((data) => {
-        const dataCopy: any = data
-        if (dataCopy.title) {
-          post.musicLinkTitle = dataCopy.title
-        }
-        if (dataCopy.siteName) {
-          post.musicLinkSite = dataCopy.siteName
-        }
-        if (dataCopy.images.length) {
-          post.musicLinkImg = dataCopy.images[0]
-        }
-      }).catch((e) => {})
+
+      await getLinkPreview(musicLink)
+        .then(data => {
+          const dataCopy: any = data
+          if (dataCopy.title) {
+            post.musicLinkTitle = dataCopy.title
+          }
+          if (dataCopy.siteName) {
+            post.musicLinkSite = dataCopy.siteName
+          }
+          if (dataCopy.images.length) {
+            post.musicLinkImg = dataCopy.images[0]
+          }
+        })
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        .catch(e => {})
 
       await post.save()
 
