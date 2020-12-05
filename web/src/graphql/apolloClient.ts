@@ -84,7 +84,9 @@ export function getApolloClient() {
               let mergedPosts: Reference[] = []
               if (existing.posts) mergedPosts = mergedPosts.concat(existing.posts)
               if (incoming.posts?.length) {
-                if ((readField<number>("id", incoming.posts[0]) || 0) > (readField<number>("id", mergedPosts[0]) || 0)) {
+                if (
+                  (readField<number>('id', incoming.posts[0]) || 0) > (readField<number>('id', mergedPosts[0]) || 0)
+                ) {
                   mergedPosts = [...incoming.posts, ...mergedPosts]
                 } else {
                   mergedPosts = mergedPosts.concat(incoming.posts)
@@ -136,10 +138,9 @@ export function getApolloClient() {
               if (!existing) {
                 return incoming
               }
-              console.log('In like merger: [existing, incoming]', existing, incoming)
               return Math.max(existing, incoming)
-            }
-          }
+            },
+          },
         },
       },
     },

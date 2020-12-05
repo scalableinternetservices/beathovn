@@ -25,13 +25,13 @@ export class Post extends BaseEntity {
   @Column()
   musicLink: string
 
-  @Column()
+  @Column({ default: '' })
   musicLinkImg: string
 
-  @Column()
+  @Column({ default: '' })
   musicLinkTitle: string
 
-  @Column()
+  @Column({ default: '' })
   musicLinkSite: string
 
   @Column()
