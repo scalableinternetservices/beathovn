@@ -105,9 +105,13 @@ export function getApolloClient() {
         fields: {
           commentFeed: {
             keyArgs: false,
-            merge: (existing, incoming) => {
+            merge: (existing, incoming, { readField }) => {
+              console.log('incoming comments', incoming)
               if (!existing) {
                 return incoming
+              }
+              if (!incoming) {
+                return existing
               }
 
               let mergedComments: any[] = []
@@ -125,8 +129,15 @@ export function getApolloClient() {
                   incoming.comments.filter((cmnt: any) => cmnt?.__ref && !seenIds[cmnt.__ref])
                 )
               }
+              mergedComments.sort((a, b) => {
+                const aId = readField<number>('id', a) ?? 1
+                const bId = readField<number>('id', b) ?? 2
+
+                return aId - bId
+              })
 
               return {
+                ...existing,
                 ...incoming,
                 comments: mergedComments,
               }
@@ -134,11 +145,38 @@ export function getApolloClient() {
           },
           likes: {
             keyArgs: false,
-            merge: (existing, incoming, { readField }) => {
+            merge: (existing, incoming) => {
               if (!existing) {
                 return incoming
               }
               return Math.max(existing, incoming)
+            },
+          },
+          musicLinkImg: {
+            keyArgs: false,
+            merge: (existing, incoming) => {
+              if (existing) {
+                return existing
+              }
+              return incoming
+            },
+          },
+          musicLinkSite: {
+            keyArgs: false,
+            merge: (existing, incoming) => {
+              if (existing) {
+                return existing
+              }
+              return incoming
+            },
+          },
+          musicLinkTitle: {
+            keyArgs: false,
+            merge: (existing, incoming) => {
+              if (existing) {
+                return existing
+              }
+              return incoming
             },
           },
         },

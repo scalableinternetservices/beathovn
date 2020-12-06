@@ -161,7 +161,7 @@ export const graphqlRoot: Resolvers<Context> = {
         post.user = ctx.user
       }
 
-      await getLinkPreview(musicLink)
+      getLinkPreview(musicLink)
         .then(data => {
           const dataCopy: any = data
           if (dataCopy.title) {
@@ -173,6 +173,9 @@ export const graphqlRoot: Resolvers<Context> = {
           if (dataCopy.images.length) {
             post.musicLinkImg = dataCopy.images[0]
           }
+
+          void post.save()
+          ctx.pubsub.publish('UPDATE_POST', postToPostWithLikeCount(post))
         })
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         .catch(e => {})
@@ -219,6 +222,8 @@ export const graphqlRoot: Resolvers<Context> = {
       // Add comment to post
       post.comments.push(comment)
       await post.save()
+
+      ctx.pubsub.publish('UPDATE_POST', { id: post.id })
 
       return comment
     },
@@ -294,6 +299,8 @@ export const graphqlRoot: Resolvers<Context> = {
       let oldestCommentIndex: number
       if (!cursor) {
         oldestCommentIndex = 0
+      } else if (cursor == 'LATEST') {
+        oldestCommentIndex = fullPost.comments.length - 1
       } else {
         const cursorInt = parseInt(cursor)
         oldestCommentIndex = fullPost.comments.findIndex(comment => comment.id === cursorInt)
@@ -324,7 +331,9 @@ export const graphqlRoot: Resolvers<Context> = {
     },
     postUpdates: {
       subscribe: (_, __, context) => context.pubsub.asyncIterator('UPDATE_POST'),
-      resolve: (payload: any) => payload,
+      resolve: (payload: any) => {
+        return payload
+      }
     },
   },
 }
