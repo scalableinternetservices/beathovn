@@ -2,6 +2,7 @@ import { readFileSync } from 'fs'
 import { PubSub } from 'graphql-yoga'
 import { getLinkPreview } from 'link-preview-js'
 import path from 'path'
+import { getRepository } from 'typeorm'
 import { check } from '../../../common/src/util'
 import { Comment } from '../entities/Comment'
 import { Following } from '../entities/Following'
@@ -33,6 +34,22 @@ export const graphqlRoot: Resolvers<Context> = {
     survey: async (_, { surveyId }) => (await Survey.findOne({ where: { id: surveyId } })) || null,
     surveys: () => Survey.find(),
     posts: async (_, { cursor }) => {
+      const limit = 10
+
+      let postsSadge = getRepository(Post)
+        .createQueryBuilder('post')
+        .addSelect('COUNT(DISTINCT like.id)', 'like_count')
+        .leftJoin('post.likes', 'like')
+        .leftJoinAndSelect('post.user', 'user')
+
+      if (cursor) {
+        postsSadge = postsSadge.where('post.id < :cursor', { cursor: parseInt(cursor) })
+      }
+      postsSadge = postsSadge.groupBy('post.id').orderBy('post.id', 'DESC').limit(limit)
+
+      const pseudoPosts = await postsSadge.getRawMany()
+      console.log(pseudoPosts)
+
       const postsWithLikes = await Post.find({ relations: ['user', 'likes', 'comments', 'comments.user'] }).then(rows =>
         rows.map(row => {
           return {
@@ -57,8 +74,6 @@ export const graphqlRoot: Resolvers<Context> = {
         const cursorInt = parseInt(cursor)
         newestPostIndex = postsWithLikes.findIndex(p => p.id === cursorInt)
       }
-
-      const limit = 10
 
       const newCursor = postsWithLikes[Math.max(newestPostIndex - limit, 0)].id
 
@@ -142,7 +157,7 @@ export const graphqlRoot: Resolvers<Context> = {
           }
         })
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        .catch(e => {})
+        .catch(e => { })
 
       await post.save()
 
