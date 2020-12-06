@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs'
 import { PubSub } from 'graphql-yoga'
+import Redis from 'ioredis'
 import { getLinkPreview } from 'link-preview-js'
 import path from 'path'
 import { getRepository } from 'typeorm'
@@ -15,6 +16,7 @@ import { User } from '../entities/User'
 import { PostWithLikeCount, Resolvers } from './schema.types'
 
 export const pubsub = new PubSub()
+export const redis = new Redis()
 
 export function getSchema() {
   const schema = readFileSync(path.join(__dirname, 'schema.graphql'))
@@ -26,6 +28,7 @@ interface Context {
   request: Request
   response: Response
   pubsub: PubSub
+  redis: Redis.Redis
 }
 
 export const graphqlRoot: Resolvers<Context> = {
@@ -58,40 +61,6 @@ export const graphqlRoot: Resolvers<Context> = {
         hasMore: (postsWithLikesFromQuery.length) ? hasMore : false
       }
 
-      // const postsWithLikes = await Post.find({ relations: ['user', 'likes', 'comments', 'comments.user'] }).then(rows =>
-      //   rows.map(row => {
-      //     return {
-      //       ...row,
-      //       likes: row.likes?.length || 0,
-      //     }
-      //   })
-      // )
-
-      // if (postsWithLikes.length == 0) {
-      //   return {
-      //     posts: postsWithLikes,
-      //     cursor: '',
-      //     hasMore: false,
-      //   }
-      // }
-
-      // let newestPostIndex: number
-      // if (!cursor) {
-      //   newestPostIndex = postsWithLikes.length
-      // } else {
-      //   const cursorInt = parseInt(cursor)
-      //   newestPostIndex = postsWithLikes.findIndex(p => p.id === cursorInt)
-      // }
-
-      // const newCursor = postsWithLikes[Math.max(newestPostIndex - limit, 0)].id
-
-      // const postFeed = {
-      //   posts: postsWithLikes.slice(Math.max(0, newestPostIndex - limit), newestPostIndex).reverse(),
-      //   cursor: String(newCursor),
-      //   hasMore: newestPostIndex - limit > 0,
-      // }
-
-      // return postFeed
     },
     postDetails: (_, { postId }) => {
       return Post.findOne({ where: { id: postId }, relations: ['user', 'likes', 'comments', 'comments.user'] }).then(
