@@ -93,7 +93,7 @@ export interface FetchPosts_posts_posts {
   musicLinkTitle: string | null;
   musicLinkSite: string | null;
   commentary: string | null;
-  likes: number;
+  likes: number | null;
   user: FetchPosts_posts_posts_user | null;
 }
 
@@ -183,7 +183,7 @@ export interface PostFeedSubscription_postFeedUpdates {
   musicLinkTitle: string | null;
   musicLinkSite: string | null;
   commentary: string | null;
-  likes: number;
+  likes: number | null;
   user: PostFeedSubscription_postFeedUpdates_user | null;
 }
 
@@ -200,10 +200,34 @@ export interface PostFeedSubscription {
 // GraphQL subscription operation: PostUpdatesSubscription
 // ====================================================
 
+export interface PostUpdatesSubscription_postUpdates_commentFeed_comments_user {
+  __typename: "User";
+  id: number;
+  name: string;
+  email: string;
+  userType: UserType;
+}
+
+export interface PostUpdatesSubscription_postUpdates_commentFeed_comments {
+  __typename: "Comment";
+  id: number;
+  text: string;
+  user: PostUpdatesSubscription_postUpdates_commentFeed_comments_user;
+}
+
+export interface PostUpdatesSubscription_postUpdates_commentFeed {
+  __typename: "CommentFeed";
+  comments: (PostUpdatesSubscription_postUpdates_commentFeed_comments | null)[];
+}
+
 export interface PostUpdatesSubscription_postUpdates {
   __typename: "PostWithLikeCount";
   id: number;
-  likes: number;
+  likes: number | null;
+  musicLinkImg: string | null;
+  musicLinkSite: string | null;
+  musicLinkTitle: string | null;
+  commentFeed: PostUpdatesSubscription_postUpdates_commentFeed | null;
 }
 
 export interface PostUpdatesSubscription {
@@ -523,7 +547,7 @@ export interface PostWithLikeCount {
   musicLinkTitle: string | null;
   musicLinkSite: string | null;
   commentary: string | null;
-  likes: number;
+  likes: number | null;
   user: PostWithLikeCount_user | null;
 }
 
@@ -552,7 +576,7 @@ export interface PostFeed_posts {
   musicLinkTitle: string | null;
   musicLinkSite: string | null;
   commentary: string | null;
-  likes: number;
+  likes: number | null;
   user: PostFeed_posts_user | null;
 }
 
