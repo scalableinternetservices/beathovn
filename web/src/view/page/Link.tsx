@@ -1,6 +1,7 @@
 import * as React from 'react';
 
-export function Link( props: {musicLink: string, musicLinkImg: string, musicLinkSite: string, musicLinkTitle: string}) {
+export function Link( props: {musicLink: string, musicLinkImg: string, musicLinkSite: string, musicLinkTitle: string, uniqueId: number}) {
+  const { uniqueId } = props
   return (
     <ReadmeImg width="256" height="64">
       <style>
@@ -23,27 +24,25 @@ export function Link( props: {musicLink: string, musicLinkImg: string, musicLink
 
             p {
               display: block;
-              opacity: 0;
             }
 
-            #track,
-            #musicSite,
-            #cover {
+            #track-${uniqueId}{
               opacity: 0;
-              animation: appear 300ms ease-out forwards;
+              z-index: -100;
+              animation: appear-${uniqueId} 300ms ease-out forwards;
             }
 
-            #track {
+            #musicSite-${uniqueId}{
+              opacity: 0;
+              animation: appear-${uniqueId} 300ms ease-out forwards;
+            }
+
+            #track-${uniqueId} {
               animation-delay: 400ms;
             }
 
-            #musicSite {
-              animation-delay: 500ms;
-            }
-
-            #cover {
-              animation-name: cover-appear;
-              animation-delay: 300ms;
+            #cover-${uniqueId} {
+              animation: cover-appear-${uniqueId} 300ms ease-out forwards;
               box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 3px 10px rgba(0,0,0,0.05);
             }
 
@@ -51,7 +50,7 @@ export function Link( props: {musicLink: string, musicLinkImg: string, musicLink
               box-shadow: none;
             }
 
-            @keyframes cover-appear {
+            @keyframes cover-appear-${uniqueId} {
               from {
                 opacity: 0;
                 transform: scale(0.8);
@@ -62,7 +61,7 @@ export function Link( props: {musicLink: string, musicLinkImg: string, musicLink
               }
             }
 
-            @keyframes appear {
+            @keyframes appear-${uniqueId} {
               from {
                 opacity: 0;
                 transform: translateX(-8px);
@@ -84,7 +83,7 @@ export function Link( props: {musicLink: string, musicLinkImg: string, musicLink
             paddingLeft: 4
             }}
         >
-            <img id="cover" src={props.musicLinkImg ?? null} width="48" height="48" />
+            <img id={`cover-${uniqueId}`} src={props.musicLinkImg ?? null} width="48" height="48" />
             <div
             style={{
                 display: "flex",
@@ -94,10 +93,10 @@ export function Link( props: {musicLink: string, musicLinkImg: string, musicLink
                 marginLeft: 8
             }}
             >
-            <Text id="track" weight="bold">
+            <Text id={`track-${uniqueId}`} weight="bold">
                 {props.musicLinkTitle || props.musicLink}
             </Text>
-            <Text id="musicSite" color={!props.musicLinkSite ? "gray" : undefined}>
+            <Text id={`musicSite-${uniqueId}`} color={!props.musicLinkSite ? "gray" : undefined}>
                 {props.musicLinkSite || "interwebs"}
             </Text>
             </div>

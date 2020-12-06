@@ -110,7 +110,8 @@ export function Post(props: { postData: PostWithLikeCount }) {
           musicLink={props.postData.musicLink}
           musicLinkImg={props.postData.musicLinkImg || ''}
           musicLinkSite={props.postData.musicLinkSite || ''}
-          musicLinkTitle={props.postData.musicLinkTitle || ''}/>
+          musicLinkTitle={props.postData.musicLinkTitle || ''}
+          uniqueId={props.postData.id}/>
         <h3>{props.postData.commentary}</h3>
         <h3>likes: {props.postData.likes} </h3>
         {user && (
