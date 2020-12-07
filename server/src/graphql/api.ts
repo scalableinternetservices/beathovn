@@ -110,10 +110,7 @@ export const graphqlRoot: Resolvers<Context> = {
       return Post.findOne({ where: { id: postId }, relations: ['user', 'likes', 'comments', 'comments.user'] }).then(
         res => {
           if (res) {
-            return {
-              ...res,
-              likes: res.likes?.length || 0,
-            }
+            return postToPostWithLikeCount(res)
           } else {
             return null
           }
@@ -176,15 +173,13 @@ export const graphqlRoot: Resolvers<Context> = {
           if (dataCopy.images.length) {
             post.musicLinkImg = dataCopy.images[0]
           }
-
-          post.save().then((p) => {
-            ctx.redis.zadd(POSTS_CACHE, p.id, JSON.stringify(postToPostWithLikeCount(post)))
-          })
         })
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         .catch(e => {})
 
-      await post.save()
+      await post.save().then((p) => {
+        ctx.redis.zadd(POSTS_CACHE, p.id, JSON.stringify(postToPostWithLikeCount(post)))
+      })
 
       if (post.user) {
         post.user.posts.push(post)

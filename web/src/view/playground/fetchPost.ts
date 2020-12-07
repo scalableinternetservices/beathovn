@@ -60,6 +60,7 @@ const fetchPostCommentsQuery = gql`
   query FetchPostDetails($postId: Int!, $cursor: String) {
     postDetails(postId: $postId) {
       id
+      likes
       commentFeed(cursor: $cursor) {
         cursor
         hasMore
