@@ -174,20 +174,27 @@ export const graphqlRoot: Resolvers<Context> = {
             post.musicLinkImg = dataCopy.images[0]
           }
 
-          void post.save()
-          ctx.pubsub.publish('UPDATE_POST', postToPostWithLikeCount(post))
+          post.save().then((p) => {
+            ctx.redis.zadd(POSTS_CACHE, p.id, JSON.stringify(postToPostWithLikeCount(p)))
+            ctx.pubsub.publish('UPDATE_POST', postToPostWithLikeCount(p))
+            if (post.user) {
+              post.user.posts.push(p)
+              post.user.save()
+            }
+          })
         })
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        .catch(e => {})
+        .catch(e => {
+          post.save().then((p) => {
+            ctx.redis.zadd(POSTS_CACHE, p.id, JSON.stringify(postToPostWithLikeCount(p)))
+            if (post.user) {
+              post.user.posts.push(p)
+              post.user.save()
+            }
+          })
+        })
 
-      await post.save().then((p) => {
-        ctx.redis.zadd(POSTS_CACHE, p.id, JSON.stringify(postToPostWithLikeCount(post)))
-      })
-
-      if (post.user) {
-        post.user.posts.push(post)
-        await post.user.save()
-      }
+      await post.save()
 
       ctx.pubsub.publish('CREATE_POST', postToPostWithLikeCount(post))
       // Invalidate cache
