@@ -12,7 +12,7 @@ import { Survey } from '../entities/Survey'
 import { SurveyAnswer } from '../entities/SurveyAnswer'
 import { SurveyQuestion } from '../entities/SurveyQuestion'
 import { User } from '../entities/User'
-import { Resolvers } from './schema.types'
+import { PostWithLikeCount, Resolvers } from './schema.types'
 
 export const pubsub = new PubSub()
 
@@ -48,42 +48,50 @@ export const graphqlRoot: Resolvers<Context> = {
       postsSadge = postsSadge.groupBy('post.id').orderBy('post.id', 'DESC').limit(limit)
 
       const pseudoPosts = await postsSadge.getRawMany()
-      console.log(pseudoPosts)
+      const postsWithLikesFromQuery = pseudoPosts.map((p) => textRowToPostWithLikeCount(p))
+      const lastPost = postsWithLikesFromQuery[postsWithLikesFromQuery.length - 1]
+      const hasMore = (lastPost.id - limit) > 0
 
-      const postsWithLikes = await Post.find({ relations: ['user', 'likes', 'comments', 'comments.user'] }).then(rows =>
-        rows.map(row => {
-          return {
-            ...row,
-            likes: row.likes?.length || 0,
-          }
-        })
-      )
-
-      if (postsWithLikes.length == 0) {
-        return {
-          posts: postsWithLikes,
-          cursor: '',
-          hasMore: false,
-        }
+      return {
+        posts: postsWithLikesFromQuery,
+        cursor: (postsWithLikesFromQuery.length) ? String(lastPost.id) : '',
+        hasMore: (postsWithLikesFromQuery.length) ? hasMore : false
       }
 
-      let newestPostIndex: number
-      if (!cursor) {
-        newestPostIndex = postsWithLikes.length
-      } else {
-        const cursorInt = parseInt(cursor)
-        newestPostIndex = postsWithLikes.findIndex(p => p.id === cursorInt)
-      }
+      // const postsWithLikes = await Post.find({ relations: ['user', 'likes', 'comments', 'comments.user'] }).then(rows =>
+      //   rows.map(row => {
+      //     return {
+      //       ...row,
+      //       likes: row.likes?.length || 0,
+      //     }
+      //   })
+      // )
 
-      const newCursor = postsWithLikes[Math.max(newestPostIndex - limit, 0)].id
+      // if (postsWithLikes.length == 0) {
+      //   return {
+      //     posts: postsWithLikes,
+      //     cursor: '',
+      //     hasMore: false,
+      //   }
+      // }
 
-      const postFeed = {
-        posts: postsWithLikes.slice(Math.max(0, newestPostIndex - limit), newestPostIndex).reverse(),
-        cursor: String(newCursor),
-        hasMore: newestPostIndex - limit > 0,
-      }
+      // let newestPostIndex: number
+      // if (!cursor) {
+      //   newestPostIndex = postsWithLikes.length
+      // } else {
+      //   const cursorInt = parseInt(cursor)
+      //   newestPostIndex = postsWithLikes.findIndex(p => p.id === cursorInt)
+      // }
 
-      return postFeed
+      // const newCursor = postsWithLikes[Math.max(newestPostIndex - limit, 0)].id
+
+      // const postFeed = {
+      //   posts: postsWithLikes.slice(Math.max(0, newestPostIndex - limit), newestPostIndex).reverse(),
+      //   cursor: String(newCursor),
+      //   hasMore: newestPostIndex - limit > 0,
+      // }
+
+      // return postFeed
     },
     postDetails: (_, { postId }) => {
       return Post.findOne({ where: { id: postId }, relations: ['user', 'likes', 'comments', 'comments.user'] }).then(
@@ -306,4 +314,36 @@ export const graphqlRoot: Resolvers<Context> = {
 
 const postToPostWithLikeCount = (post: Post) => {
   return { ...post, likes: post.likes?.length || 0 }
+}
+
+const textRowToPostWithLikeCount = (textRow: any) : PostWithLikeCount => {
+  const {
+    post_id: id,
+    post_musicLink: musicLink,
+    post_musicLinkImg: musicLinkImg,
+    post_musicLinkTitle: musicLinkTitle,
+    post_musicLinkSite: musicLinkSite,
+    post_commentary: commentary,
+    user_id,
+    user_email,
+    user_name,
+    user_userType,
+    like_count: likes
+  } = textRow;
+  const tempUser = new User()
+  tempUser.id = user_id
+  tempUser.email = user_email
+  tempUser.name = user_name
+  tempUser.userType = user_userType
+  return {
+    id,
+    musicLink,
+    musicLinkImg,
+    musicLinkSite,
+    musicLinkTitle,
+    commentary,
+    comments: [],
+    likes,
+    user: tempUser
+  }
 }
