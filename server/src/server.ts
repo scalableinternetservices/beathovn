@@ -22,7 +22,7 @@ import { migrate } from './db/migrate'
 import { initORM } from './db/sql'
 import { Session } from './entities/Session'
 import { User } from './entities/User'
-import { getSchema, graphqlRoot, pubsub } from './graphql/api'
+import { getSchema, graphqlRoot, pubsub, redis } from './graphql/api'
 import { ConnectionManager } from './graphql/ConnectionManager'
 import { expressLambdaProxy } from './lambda/handler'
 import { renderApp } from './render'
@@ -30,7 +30,7 @@ import { renderApp } from './render'
 const server = new GraphQLServer({
   typeDefs: getSchema(),
   resolvers: graphqlRoot as any,
-  context: ctx => ({ ...ctx, pubsub, user: (ctx.request as any)?.user || null }),
+  context: ctx => ({ ...ctx, pubsub, redis, user: (ctx.request as any)?.user || null }),
 })
 
 server.express.use(cookieParser())

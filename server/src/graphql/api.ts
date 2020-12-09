@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs'
 import { PubSub } from 'graphql-yoga'
+import Redis from 'ioredis'
 import { getLinkPreview } from 'link-preview-js'
 import path from 'path'
 import { getRepository } from 'typeorm'
@@ -14,7 +15,11 @@ import { SurveyQuestion } from '../entities/SurveyQuestion'
 import { User } from '../entities/User'
 import { PostWithLikeCount, Resolvers } from './schema.types'
 
+const POSTS_CACHE = 'posts'
+const POSTS_QUERY_PREFIX = 'posts_query:'
+
 export const pubsub = new PubSub()
+export const redis = new Redis()
 
 export function getSchema() {
   const schema = readFileSync(path.join(__dirname, 'schema.graphql'))
@@ -26,6 +31,7 @@ interface Context {
   request: Request
   response: Response
   pubsub: PubSub
+  redis: Redis.Redis
 }
 
 export const graphqlRoot: Resolvers<Context> = {
@@ -33,9 +39,43 @@ export const graphqlRoot: Resolvers<Context> = {
     self: (_, args, ctx) => ctx.user,
     survey: async (_, { surveyId }) => (await Survey.findOne({ where: { id: surveyId } })) || null,
     surveys: () => Survey.find(),
-    posts: async (_, { cursor }) => {
+    posts: async (_, { cursor }, ctx) => {
       const limit = 10
+      const cursorInt = parseInt(cursor || '0')
+      const cachedCursoredQueryKey = `${POSTS_QUERY_PREFIX}${cursor || ''}`
+      // If cursored query is cached, return cached response
+      const cachedCursoredQuery = await ctx.redis.get(cachedCursoredQueryKey).then((res) => {
+        return res
+      }).catch(e => {})
+      if (cachedCursoredQuery) {
+        console.log('Returning cached response')
+        return JSON.parse(cachedCursoredQuery)
+      }
+      // Else, see if cursored query can be built from cached data
+      if (cursor) {
+        console.log('Returning built cached response')
+        const cachedPosts = await ctx.redis.zrangebyscore(POSTS_CACHE, String(cursorInt-limit-1), String(cursorInt-1)).then((res) => {
+          return res
+        }).catch(e => {})
+        // Make sure cachedPosts exists, and make sure cursored queries are correct
+        if (cachedPosts && ((cursorInt <= limit) || (cachedPosts.length == limit))) {
+          const cachedPostsJSON = cachedPosts.map((p) => JSON.parse(p)).reverse()
+          const lastCachedPost = cachedPostsJSON[cachedPostsJSON.length - 1]
+          let hasMore = (lastCachedPost.id) > 1
 
+          const res = {
+            posts: cachedPostsJSON,
+            cursor: (cachedPostsJSON.length) ? String(lastCachedPost.id) : '',
+            hasMore: (cachedPostsJSON.length) ? hasMore : false
+          }
+          // Cache query response
+          ctx.redis.set(cachedCursoredQueryKey, JSON.stringify(res))
+
+          return res
+        }
+      }
+
+      // Otherwise run query
       let postsSadge = getRepository(Post)
         .createQueryBuilder('post')
         .addSelect('COUNT(DISTINCT like.id)', 'like_count')
@@ -43,64 +83,34 @@ export const graphqlRoot: Resolvers<Context> = {
         .leftJoinAndSelect('post.user', 'user')
 
       if (cursor) {
-        postsSadge = postsSadge.where('post.id < :cursor', { cursor: parseInt(cursor) })
+        postsSadge = postsSadge.where('post.id < :cursor', { cursor: cursorInt })
       }
       postsSadge = postsSadge.groupBy('post.id').orderBy('post.id', 'DESC').limit(limit)
 
       const pseudoPosts = await postsSadge.getRawMany()
       const postsWithLikesFromQuery = pseudoPosts.map((p) => textRowToPostWithLikeCount(p))
       const lastPost = postsWithLikesFromQuery[postsWithLikesFromQuery.length - 1]
-      const hasMore = (lastPost.id - limit) > 0
+      const hasMore = (lastPost.id) > 1
 
-      return {
+      const res = {
         posts: postsWithLikesFromQuery,
         cursor: (postsWithLikesFromQuery.length) ? String(lastPost.id) : '',
         hasMore: (postsWithLikesFromQuery.length) ? hasMore : false
       }
+      // Cache query response
+      ctx.redis.set(cachedCursoredQueryKey, JSON.stringify(res))
+      // Cache posts
+      postsWithLikesFromQuery.map((p) => {
+        ctx.redis.zadd(POSTS_CACHE, p.id, JSON.stringify(p))
+      })
 
-      // const postsWithLikes = await Post.find({ relations: ['user', 'likes', 'comments', 'comments.user'] }).then(rows =>
-      //   rows.map(row => {
-      //     return {
-      //       ...row,
-      //       likes: row.likes?.length || 0,
-      //     }
-      //   })
-      // )
-
-      // if (postsWithLikes.length == 0) {
-      //   return {
-      //     posts: postsWithLikes,
-      //     cursor: '',
-      //     hasMore: false,
-      //   }
-      // }
-
-      // let newestPostIndex: number
-      // if (!cursor) {
-      //   newestPostIndex = postsWithLikes.length
-      // } else {
-      //   const cursorInt = parseInt(cursor)
-      //   newestPostIndex = postsWithLikes.findIndex(p => p.id === cursorInt)
-      // }
-
-      // const newCursor = postsWithLikes[Math.max(newestPostIndex - limit, 0)].id
-
-      // const postFeed = {
-      //   posts: postsWithLikes.slice(Math.max(0, newestPostIndex - limit), newestPostIndex).reverse(),
-      //   cursor: String(newCursor),
-      //   hasMore: newestPostIndex - limit > 0,
-      // }
-
-      // return postFeed
+      return res
     },
     postDetails: (_, { postId }) => {
       return Post.findOne({ where: { id: postId }, relations: ['user', 'likes', 'comments', 'comments.user'] }).then(
         res => {
           if (res) {
-            return {
-              ...res,
-              likes: res.likes?.length || 0,
-            }
+            return postToPostWithLikeCount(res)
           } else {
             return null
           }
@@ -165,17 +175,24 @@ export const graphqlRoot: Resolvers<Context> = {
           }
         })
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        .catch(e => { })
+        .catch(e => {})
 
-      await post.save()
+      await post.save().then((p) => {
+        ctx.redis.zadd(POSTS_CACHE, p.id, JSON.stringify(postToPostWithLikeCount(post)))
+      })
 
       if (post.user) {
         post.user.posts.push(post)
         await post.user.save()
       }
 
-      // const payload = { post: postToPostWithLikeCount(post) }
       ctx.pubsub.publish('CREATE_POST', postToPostWithLikeCount(post))
+      // Invalidate cache
+      ctx.redis.ttl(POSTS_QUERY_PREFIX).then((res) => {
+        if (res < 0) {
+          ctx.redis.expire(POSTS_QUERY_PREFIX, 10)
+        }
+      }).catch(e => {})
 
       return post
     },

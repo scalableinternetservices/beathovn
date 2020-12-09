@@ -19,6 +19,7 @@
     "deploy:init": "npm run build && ./script/deploy-init.sh",
     "deploy:version": "./script/deploy-version.sh",
     "docker": "docker-compose up -d",
+    "docker:redis:shell": "docker exec -it beathovn_redis_1 sh",
     "docker:down": "docker-compose down",
     "docker:restart": "npm run docker:down && npm run docker",
     "watch": "concurrently --kill-others \"npm run watch:web\" \"npm run watch:server\"",
