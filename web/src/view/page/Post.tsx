@@ -37,7 +37,6 @@ export function Post(props: { postData: PostWithLikeCount }) {
   const [displayComments, setDisplayComments] = useState(false)
   const { user } = useContext(UserContext)
   const [loadingComments, setLoadingComments] = useState(false)
-  const [staleComments, setStaleComments] = useState(false)
   // console.log(props.postData.comments);
 
   const { data: commentData, fetchMore } = fetchPostComments(props.postData.id)
@@ -50,7 +49,6 @@ export function Post(props: { postData: PostWithLikeCount }) {
         cursor: commentData?.postDetails?.commentFeed?.cursor,
       },
     })
-    setStaleComments(false)
     setLoadingComments(false)
   }
 
@@ -75,7 +73,7 @@ export function Post(props: { postData: PostWithLikeCount }) {
             )
         )}
         {comments &&
-          (commentData?.postDetails?.commentFeed?.hasMore || staleComments) &&
+          (commentData?.postDetails?.commentFeed?.hasMore) &&
           (loadingComments ? <div> Loading comments... </div> : <Button onClick={fetchMoreComments}>Load More</Button>)}
       </div>
     )
@@ -89,7 +87,6 @@ export function Post(props: { postData: PostWithLikeCount }) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       createComment({ text, postId: props.postId })
       setText('')
-      setStaleComments(true)
     }
 
     return (

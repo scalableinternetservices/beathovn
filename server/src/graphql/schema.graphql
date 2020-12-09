@@ -149,7 +149,7 @@ type PostWithLikeCount {
   commentary: String
   comments: [Comment!]!
   commentFeed(cursor: String): CommentFeed
-  likes: Int!
+  likes: Int
   user: User
   # timeCreated: Int
 }

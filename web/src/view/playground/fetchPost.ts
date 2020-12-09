@@ -89,8 +89,18 @@ export const postUpdatesSubscription = gql`
     postUpdates {
       id
       likes
+      musicLinkImg
+      musicLinkSite
+      musicLinkTitle
+      commentFeed(cursor: "LATEST") {
+        comments {
+          ...Comment
+        }
+      }
     }
   }
+  ${fragmentUser}
+  ${fragmentComment}
 `
 
 export function fetchPosts($cursor?: string) {

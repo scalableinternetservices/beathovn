@@ -175,7 +175,7 @@ export interface PostWithLikeCount {
   commentary?: Maybe<Scalars['String']>
   comments: Array<Comment>
   commentFeed?: Maybe<CommentFeed>
-  likes: Scalars['Int']
+  likes?: Maybe<Scalars['Int']>
   user?: Maybe<User>
 }
 
@@ -554,7 +554,7 @@ export type PostWithLikeCountResolvers<
     ContextType,
     RequireFields<PostWithLikeCountCommentFeedArgs, never>
   >
-  likes?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  likes?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
