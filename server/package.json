@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:schema": "ts-node ./node_modules/@proscom/typeorm-uml/bin/run ormconfig.json"
   },
   "dependencies": {
     "aws-sdk": "^2.751.0",
@@ -21,11 +22,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@proscom/typeorm-uml": "^1.2.0",
     "@types/aws-lambda": "^8.10.62",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.7",
     "@types/ioredis": "^4.17.4",
     "@types/mysql2": "github:types/mysql2",
-    "@types/node": "^14.11.1"
+    "@types/node": "^14.11.1",
+    "ts-node": "^9.1.1"
   }
 }
